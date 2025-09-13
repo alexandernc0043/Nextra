@@ -38,7 +38,7 @@ export default async function RootLayout({children}) {
             banner={banner}
             navbar={navbar}
             pageMap={await getPageMap()}
-            docsRepositoryBase="https://github.com/alexandernc0043/Nextra"
+            docsRepositoryBase="https://github.com/alexandernc0043/Nextra/tree/main"
             footer={footer}
             // ... Your additional layout options
         >
