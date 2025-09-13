@@ -1,5 +1,5 @@
 import {Footer, Layout, Navbar} from 'nextra-theme-docs'
-import {Banner, Head} from 'nextra/components'
+import {Banner, Head, Search} from 'nextra/components'
 import {getPageMap} from 'nextra/page-map'
 import 'nextra-theme-docs/style.css'
 import { Analytics } from "@vercel/analytics/next"
@@ -42,6 +42,7 @@ export default async function RootLayout({children}) {
             pageMap={await getPageMap()}
             docsRepositoryBase="https://github.com/alexandernc0043/Nextra/tree/main"
             footer={footer}
+            search={<Search placeholder={"Search Instructions"}/>}
             // ... Your additional layout options
         >
             {children}
