@@ -4,6 +4,7 @@
 
 import { Callout } from "nextra/components";
 import { Steps } from 'nextra/components'
+import { FileTree } from 'nextra/components'
 
 <Steps>
     ### Enable showing file extensions on your system.
@@ -180,6 +181,50 @@ import { Steps } from 'nextra/components'
     **Password:** YOUR_NINER_NET_PASSWORD\
     **Port:** 22\
     Once you are connected you should see your computer's files on the left and the server's on the right
-    ### 
-
+    ### On the server side open the `public_html` folder.
+    `public_html` is where you should be placing all work.
+    ### Find your GITHUB_USER_NAME.github.io folder on your computer.
+    Your computer's files are the ones on the left side. Also the default location for GitHub repositorys is Documents/GitHub.
+    ### Archive your default index.html
+    Once you have located your folder drag the `publc_html/index.html` folder on the server side inside your `GITHUB_USER.github.io/itis3135/archive` folder
+    ### Now move your project files
+    After you have archived the default `index.html` file done that move your `index.html` in the `root` of your website and `itis3135` folder into the `public_html` folder on the server side.
+    
+    Your file tree should look like this now:
+    <FileTree>
+      <FileTree.Folder name="public_html" defaultOpen>
+          <FileTree.Folder name="itis3135">
+            <FileTree.File name="index.html" defaultOpen/>
+            <FileTree.Folder name="images"/>
+            <FileTree.Folder name="styles"/>
+            <FileTree.Folder name="components"/>
+            <FileTree.Folder name="scripts"/>
+            <FileTree.Folder name="projects"/>
+            <FileTree.Folder name="archives" defaultOpen>
+                <FileTree.File name="index.html" />
+            </FileTree.Folder>
+          </FileTree.Folder>
+          <FileTree.File name="index.html" />
+      </FileTree.Folder>
+    </FileTree>
+    <Callout>This file tree is interactive :)</Callout>
+    ### Commit your Changes
+    After you have successfully set up your university webspace go to GitHub Desktop and commit your changes
+    <Steps>
+        #### Add a summary
+        Type a brief summary into the box on GitHub desktop
+        #### Click commit # files
+        #### Click push origin
+    </Steps>
 </Steps>
+## Submission
+> Please submit the following
+> Note: your university webpage and GitHub webpage should/need to be identical.
+
+* A screenshot of the entire FileZilla application showing your computer's files and server's files.
+* The URL for your UNCC webpage's itis3135 page.
+
+<Callout>**Example:** [https://webpages.charlotte.edu/aprechte/itis3135/](https://webpages.charlotte.edu/aprechte/itis3135/)</Callout>
+* The URL for your GitHub repository.
+
+<Callout>**Example:** [https://github.com/alexandernc0043/alexandernc0043.github.io](https://github.com/alexandernc0043/alexandernc0043.github.io)</Callout>
