@@ -33,8 +33,9 @@ import { FileTree } from 'nextra/components'
     > ***Note:** Replace the bolded parts with your university provided login\*
     ### Install GitHub Desktop
     You can download GitHub Desktop from [here](https://desktop.github.com/download/).\
-    <Callout>You do not need to use GitHub Desktop and may use another Git Client or use the Git CLI. We recommend it as
-        not everyone is familiar with git and CLI tools. But Instructions will assume that you installed it.</Callout>
+    > [!NOTE]
+    >
+    > You do not need to use GitHub Desktop and may use another Git Client or use the Git CLI. We recommend it as not everyone is familiar with git and CLI tools. But Instructions will assume that you installed it.
 </Steps>
 ## Set up GitHub
 <Steps>
@@ -43,14 +44,15 @@ import { FileTree } from 'nextra/components'
     ### Navigate to the create repository button and create a repository.
 
     ### Name the repository as follows: **YOUR_GITHUB_USERNAME**.github.io
-    <Callout type={"info"}>
-        My GitHub username is **alexandernc0043** so my repository should be named
-        alexandernc0043.github.io
-    </Callout>
-    <Callout type={"error"}>
-        If you do not name your repository exactly like that your webpage will not
-        work.
-    </Callout>
+
+    > [!NOTE]
+    >
+    > My GitHub username is **alexandernc0043** so my repository should be named alexandernc0043.github.io
+
+    > [!CAUTION]
+    >
+    > If you do not name your repository exactly like that your webpage will not work.
+
     ### Open GitHub Desktop and clone your repository.
 
     ### Open your cloned repository in Visual Studio Code by clicking the button inside GitHub Desktop.
@@ -67,8 +69,7 @@ import { FileTree } from 'nextra/components'
     Your file should look like this now:
     ```html
     <!-- USERNAME.github.io/index.html -->
-    <
-    !DOCTYPE html>
+    <!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8"/>
@@ -98,7 +99,9 @@ import { FileTree } from 'nextra/components'
     ```html
     <a href="itis3135">Click here to go to my ITIS-3135 course page!</a>
     ```
-    <Callout>The `href` attribute stands for hypertext refrence and the value of it is where your link will go.</Callout>
+    > [!TIP]
+    >
+    > The `href` attribute stands for hypertext refrence and the value of it is where your link will go.
 
     **Your body should now look like this:**
     ```html
@@ -114,10 +117,10 @@ import { FileTree } from 'nextra/components'
 <Steps>
    ### Create your course folder
    Inside your GITHUB_USER_NAME.github.io folder create a folder named `itis3135`
-   <Callout type={"info"}>
-       In the future your GITHUB_USER_NAME.github.io folder will be referred to as
-       the "root" of your website
-   </Callout>
+   > [!NOTE]
+   >
+   > In the future your GITHUB_USER_NAME.github.io folder will be referred to as the "root" of your website
+
    ### Create your second `index.html` file
    Inside your `itis3135` folder create a new file called `index.html`
    ### Open your new `index.html`
@@ -150,37 +153,41 @@ import { FileTree } from 'nextra/components'
    4. styles
    5. project
    6. archives
-   <Callout type={"info"}>
-       GitHub won't track folders with no files inside. You can add a README.md file
-       if you want to have it be tracked but that's not required.
-   </Callout>
+   > [!NOTE]
+   > 
+   > GitHub won't track folders with no files inside. You can add a README.md file if you want to have it be tracked but that's not required.
 </Steps>
 ## Creating your UNCC webspace
 <Steps>
     ### Request your UNCC webpage
     Request your UNCC Webspace by visiting [webpages.charlotte.edu](https://webpages.charlotte.edu/) and signing in with
     your NinerNet account and clicking request account.
-    <Callout type={"info"}>This can take up to 10 minutes to provision.</Callout>
+    > [!NOTE]
+    >
+    > This can take up to 10 minutes to provision.
 
     Once your webpage is created you can visit webpages.charlotte.edu/**YOUR_NINER_NET_USERNAME**/ and you should see a template website saying it's been created.
-    <Callout type={"default"}>
-        **Example:**
-        [https://webpages.charlotte.edu/aprechte](https://webpages.charlotte.edu/aprechte)
-    </Callout>
+    > **Example:** [https://webpages.charlotte.edu/aprechte](https://webpages.charlotte.edu/aprechte)
+
     ### Use FileZilla to transfer your files to your university webspace.
-    <Callout type={"info"}>
-        If you are off campus you will need to use the Cisco Secure VPN you
+    > [!IMPORTANT]
+    > 
+    > If you are off campus you will need to use the Cisco Secure VPN you
         installed in previous steps. Inside the box when opening Cisco Secure
         Client you will type **vpn.charlotte.edu** then Login with your NinerNet
         account details.
-    </Callout>
     ### Conecting to the university's FTP server.
-    > Details for connecting to the FTP Server\
-    **Host:** webpages.charlotte.edu\
-    **Username:** YOUR_NINER_NET_USERNAME DO NOT INCLUDE @charlotte.edu\
+    Details for connecting to the FTP Server
+    > **Host:** webpages.charlotte.edu\
+    **Username:** YOUR_NINER_NET_USERNAME
     **Password:** YOUR_NINER_NET_PASSWORD\
-    **Port:** 22\
-    Once you are connected you should see your computer's files on the left and the server's on the right
+    **Port:** 22
+    Once you are connected you should see your computer's files on the left and the server's on the right    
+    
+    > [!WARNING]
+    > 
+    > If you include **@charlotte.edu** in your username the connection will not work.
+
     ### On the server side open the `public_html` folder.
     `public_html` is where you should be placing all work.
     ### Find your GITHUB_USER_NAME.github.io folder on your computer.
@@ -193,8 +200,8 @@ import { FileTree } from 'nextra/components'
     Your file tree should look like this now:
     <FileTree>
       <FileTree.Folder name="public_html" defaultOpen>
-          <FileTree.Folder name="itis3135">
-            <FileTree.File name="index.html" defaultOpen/>
+          <FileTree.Folder name="itis3135" defaultOpen>
+            <FileTree.File name="index.html"/>
             <FileTree.Folder name="images"/>
             <FileTree.Folder name="styles"/>
             <FileTree.Folder name="components"/>
@@ -207,7 +214,9 @@ import { FileTree } from 'nextra/components'
           <FileTree.File name="index.html" />
       </FileTree.Folder>
     </FileTree>
-    <Callout>This file tree is interactive :)</Callout>
+    > [!TIP]
+    > 
+    > This file tree is interactive :)
     ### Commit your Changes
     After you have successfully set up your university webspace go to GitHub Desktop and commit your changes
     <Steps>
@@ -218,13 +227,12 @@ import { FileTree } from 'nextra/components'
     </Steps>
 </Steps>
 ## Submission
-> Please submit the following
+Please submit the following
 > Note: your university webpage and GitHub webpage should/need to be identical.
 
 * A screenshot of the entire FileZilla application showing your computer's files and server's files.
 * The URL for your UNCC webpage's itis3135 page.
 
-<Callout>**Example:** [https://webpages.charlotte.edu/aprechte/itis3135/](https://webpages.charlotte.edu/aprechte/itis3135/)</Callout>
+> **Example:** [https://webpages.charlotte.edu/aprechte/itis3135/](https://webpages.charlotte.edu/aprechte/itis3135/)
 * The URL for your GitHub repository.
-
-<Callout>**Example:** [https://github.com/alexandernc0043/alexandernc0043.github.io](https://github.com/alexandernc0043/alexandernc0043.github.io)</Callout>
+> **Example:** [https://github.com/alexandernc0043/alexandernc0043.github.io](https://github.com/alexandernc0043/alexandernc0043.github.io)
