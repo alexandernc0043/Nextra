@@ -78,6 +78,16 @@ export default function Page() {
             reason: "I needed to take a science course with its lab."
         },
     ])
+    // New: quote and links
+    const [quote, setQuote] = useState("Do what is right, not what is easy nor what is popular.")
+    const [quoteAuthor, setQuoteAuthor] = useState("Roy T. Bennett")
+    const [linkCltWeb, setLinkCltWeb] = useState("https://webpages.charlotte.edu/aprechte")
+    const [linkGithub, setLinkGithub] = useState("https://github.com/alexandernc0043")
+    const [linkGithubIo, setLinkGithubIo] = useState("https://alexandernc0043.github.io/")
+    const [linkCourseIo, setLinkCourseIo] = useState("https://alexandernc0043.github.io/itis3135/")
+    const [linkFreeCodeCamp, setLinkFreeCodeCamp] = useState("https://www.freecodecamp.org/aprechte")
+    const [linkCodecademy, setLinkCodecademy] = useState("https://www.codecademy.com/profiles/aprechte")
+    const [linkLinkedIn, setLinkLinkedIn] = useState("https://www.linkedin.com/in/alexander-prechtel-b4a0a9283/")
     const exportToJson = () => {
         const inferredFilename = imageFilename || (image ? (image.split("/").pop() || "image") : "image")
         const data = {
@@ -94,6 +104,17 @@ export default function Page() {
             academicBackground,
             primaryComputer,
             courses,
+            quote,
+            quoteAuthor,
+            links: {
+                cltWeb: linkCltWeb,
+                github: linkGithub,
+                githubIo: linkGithubIo,
+                courseIo: linkCourseIo,
+                freeCodeCamp: linkFreeCodeCamp,
+                codecademy: linkCodecademy,
+                linkedIn: linkLinkedIn,
+            }
         }
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" })
         const url = URL.createObjectURL(blob)
@@ -264,7 +285,6 @@ export default function Page() {
                                     placeholder="A few sentences about you"
                                     title="Share a bit about your personal background"
                                     rows={3}
-
                                 />
                             </div>
 
@@ -443,6 +463,132 @@ export default function Page() {
                                 ))}
                             </div>
                         </div>
+
+                        <hr className={styles.divider} />
+
+                        {/* Quote */}
+                        <div className={styles.gridTwo}>
+                            <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
+                                <label className={styles.label} htmlFor="quote">Quote</label>
+                                <textarea
+                                    className={styles.textarea}
+                                    id="quote"
+                                    value={quote}
+                                    onChange={(e) => setQuote(e.target.value)}
+                                    placeholder="An inspiring or meaningful quote"
+                                    title="Add a quote to appear after courses"
+                                    rows={2}
+                                />
+                            </div>
+                            <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
+                                <label className={styles.label} htmlFor="quoteAuthor">Quote Author</label>
+                                <input
+                                    className={styles.input}
+                                    id="quoteAuthor"
+                                    type="text"
+                                    value={quoteAuthor}
+                                    onChange={(e) => setQuoteAuthor(e.target.value)}
+                                    placeholder="Who said the quote"
+                                    title="Name of the quote's author"
+                                />
+                            </div>
+                        </div>
+
+                        <hr className={styles.divider} />
+
+                        {/* Links */}
+                        <div className={styles.gridTwo}>
+                            <div className={styles.field}>
+                                <label className={styles.label} htmlFor="cltWeb">CLT Web</label>
+                                <input
+                                    className={styles.input}
+                                    id="cltWeb"
+                                    type="url"
+                                    value={linkCltWeb}
+                                    onChange={(e) => setLinkCltWeb(e.target.value)}
+                                    placeholder="https://webpages.charlotte.edu/username/"
+                                    title="UNC Charlotte personal web URL"
+                                />
+                            </div>
+
+                            <div className={styles.field}>
+                                <label className={styles.label} htmlFor="github">GitHub (profile)</label>
+                                <input
+                                    className={styles.input}
+                                    id="github"
+                                    type="url"
+                                    value={linkGithub}
+                                    onChange={(e) => setLinkGithub(e.target.value)}
+                                    placeholder="https://github.com/username"
+                                    title="GitHub profile URL"
+                                />
+                            </div>
+
+                            <div className={styles.field}>
+                                <label className={styles.label} htmlFor="githubIo">GitHub.io</label>
+                                <input
+                                    className={styles.input}
+                                    id="githubIo"
+                                    type="url"
+                                    value={linkGithubIo}
+                                    onChange={(e) => setLinkGithubIo(e.target.value)}
+                                    placeholder="https://username.github.io/"
+                                    title="GitHub Pages (username.github.io)"
+                                />
+                            </div>
+
+                            <div className={styles.field}>
+                                <label className={styles.label} htmlFor="courseIo">Course.io</label>
+                                <input
+                                    className={styles.input}
+                                    id="courseIo"
+                                    type="url"
+                                    value={linkCourseIo}
+                                    onChange={(e) => setLinkCourseIo(e.target.value)}
+                                    placeholder="https://username.github.io/course/"
+                                    title="Course page hosted on GitHub Pages"
+                                />
+                            </div>
+
+                            <div className={styles.field}>
+                                <label className={styles.label} htmlFor="freeCodeCamp">freeCodeCamp (profile)</label>
+                                <input
+                                    className={styles.input}
+                                    id="freeCodeCamp"
+                                    type="url"
+                                    value={linkFreeCodeCamp}
+                                    onChange={(e) => setLinkFreeCodeCamp(e.target.value)}
+                                    placeholder="https://www.freecodecamp.org/username"
+                                    title="freeCodeCamp profile URL"
+                                />
+                            </div>
+
+                            <div className={styles.field}>
+                                <label className={styles.label} htmlFor="codecademy">Codecademy (profile)</label>
+                                <input
+                                    className={styles.input}
+                                    id="codecademy"
+                                    type="url"
+                                    value={linkCodecademy}
+                                    onChange={(e) => setLinkCodecademy(e.target.value)}
+                                    placeholder="https://www.codecademy.com/profiles/username"
+                                    title="Codecademy profile URL"
+                                />
+                            </div>
+
+                            <div className={styles.field}>
+                                <label className={styles.label} htmlFor="linkedIn">LinkedIn (profile)</label>
+                                <input
+                                    className={styles.input}
+                                    id="linkedIn"
+                                    type="url"
+                                    value={linkLinkedIn}
+                                    onChange={(e) => setLinkLinkedIn(e.target.value)}
+                                    placeholder="https://www.linkedin.com/in/username/"
+                                    title="LinkedIn profile URL"
+                                />
+                            </div>
+                        </div>
                     </div>
                 </form>
             </section>
@@ -496,6 +642,37 @@ export default function Page() {
                                         key={index}><strong>{dept} {number} &mdash; {name}</strong>: {reason}</li>)}
                                 </ul>
                             </li>
+                            {(quote || quoteAuthor) && (
+                                <li>
+                                    <strong>Quote: </strong>
+                                    <blockquote style={{ margin: '0.5rem 0 0', padding: '0.25rem 0.5rem' }}>
+                                        <em>
+                                            {quote ? `“${quote}”` : ''} {quoteAuthor ? `— ${quoteAuthor}` : ''}
+                                        </em>
+                                    </blockquote>
+                                </li>
+                            )}
+                            {(linkCltWeb || linkGithub || linkGithubIo || linkCourseIo || linkFreeCodeCamp || linkCodecademy || linkLinkedIn) && (
+                                <li>
+                                    <strong>Links: </strong>
+                                    {(() => {
+                                        const linksArr: { label: string; href: string }[] = [];
+                                        if (linkCltWeb) linksArr.push({ label: 'CLT Web', href: linkCltWeb });
+                                        if (linkGithub) linksArr.push({ label: 'GitHub', href: linkGithub });
+                                        if (linkGithubIo) linksArr.push({ label: 'GitHub.io', href: linkGithubIo });
+                                        if (linkCourseIo) linksArr.push({ label: 'Course.io', href: linkCourseIo });
+                                        if (linkFreeCodeCamp) linksArr.push({ label: 'freeCodeCamp', href: linkFreeCodeCamp });
+                                        if (linkCodecademy) linksArr.push({ label: 'Codecademy', href: linkCodecademy });
+                                        if (linkLinkedIn) linksArr.push({ label: 'LinkedIn', href: linkLinkedIn });
+                                        return linksArr.map((l, idx) => (
+                                            <span key={`${l.label}-${idx}`}>
+                                                <a href={l.href} target="_blank" rel="noopener noreferrer">{l.label}</a>
+                                                {idx < linksArr.length - 1 ? ` ${divider} ` : null}
+                                            </span>
+                                        ));
+                                    })()}
+                                </li>
+                            )}
                         </ul>
                     </div>
                 </div>
