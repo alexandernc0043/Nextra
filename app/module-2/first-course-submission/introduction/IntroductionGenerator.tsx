@@ -238,6 +238,20 @@ export default function Page() {
 
                                 />
                             </div>
+                            <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
+                                <label className={styles.label} htmlFor="personalStatement">Personal
+                                    Statement</label>
+                                <textarea
+                                    className={styles.textarea}
+                                    id="personalStatement"
+                                    value={personalStatement}
+                                    onChange={(e) => setPersonalStatement(e.target.value)}
+                                    placeholder="A brief personal statement or summary"
+                                    title="Add a short personal statement to include in your intro"
+                                    rows={3}
+
+                                />
+                            </div>
 
                             <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
                                 <label className={styles.label} htmlFor="personalBackground">Personal
@@ -254,20 +268,7 @@ export default function Page() {
                                 />
                             </div>
 
-                            <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
-                                <label className={styles.label} htmlFor="personalStatement">Personal
-                                    Statement</label>
-                                <textarea
-                                    className={styles.textarea}
-                                    id="personalStatement"
-                                    value={personalStatement}
-                                    onChange={(e) => setPersonalStatement(e.target.value)}
-                                    placeholder="A brief personal statement or summary"
-                                    title="Add a short personal statement to include in your intro"
-                                    rows={3}
 
-                                />
-                            </div>
 
                             <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
                                 <label className={styles.label}
