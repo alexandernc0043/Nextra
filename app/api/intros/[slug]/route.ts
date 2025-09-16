@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { getDb } from '../../../../lib/mongodb'
 
-export async function GET(_req: NextRequest, { params }: { params: { slug: string } }) {
+export async function GET(_req: Request, { params }: any) {
   try {
     const db = await getDb()
     const doc = await db.collection('intros').findOne({ slug: params.slug })
@@ -17,7 +17,7 @@ export async function GET(_req: NextRequest, { params }: { params: { slug: strin
   }
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { slug: string } }) {
+export async function PUT(req: Request, { params }: any) {
   try {
     if (!process.env.MONGODB_URI) {
       return NextResponse.json({ error: 'Database not configured' }, { status: 500 })
@@ -77,4 +77,3 @@ function sanitizeIntro(input: any) {
   })) : []
   return out
 }
-

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import styles from "../IntroductionGenerator.module.css";
 
@@ -14,6 +14,14 @@ type Intro = {
 };
 
 export default function BrowseIntrosPage() {
+  return (
+    <Suspense fallback={<div className={styles.page}><div className={styles.max}><div className={styles.card}>Loading…</div></div></div>}>
+      <BrowseIntrosContent />
+    </Suspense>
+  );
+}
+
+function BrowseIntrosContent() {
   const router = useRouter();
   const params = useSearchParams();
   const initialQ = params?.get("q") || "";
@@ -153,4 +161,3 @@ async function copyLink(path: string) {
     }
   } catch {}
 }
-
