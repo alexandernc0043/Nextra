@@ -1,11 +1,9 @@
 "use client";
 import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
 import styles from './IntroductionGenerator.module.css'
 type Course = { dept: string; number: string; name: string; reason: string }
 
 export default function Page() {
-    const router = useRouter();
     const [firstName, setFirstName] = useState("Alexander");
     const [preferredName, setPreferredName] = useState("Alex");
     const [middleInitial, setMiddleInitial] = useState("J");
@@ -112,6 +110,25 @@ export default function Page() {
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '') || 'intro';
 
+    const [slugAvailability, setSlugAvailability] = useState<'unknown'|'checking'|'available'|'taken'>('unknown')
+    // Check if slug exists in DB (if configured). Debounced.
+    useEffect(() => {
+        const s = slugify(slug)
+        setSlugAvailability('checking')
+        const ctrl = new AbortController()
+        const t = setTimeout(async () => {
+            try {
+                const r = await fetch(`/api/intros/${s}`, { cache: 'no-store', signal: ctrl.signal })
+                if (r.ok) setSlugAvailability('taken')
+                else if (r.status === 404) setSlugAvailability('available')
+                else setSlugAvailability('unknown')
+            } catch {
+                setSlugAvailability('unknown')
+            }
+        }, 350)
+        return () => { ctrl.abort(); clearTimeout(t) }
+    }, [slug])
+
     // Auto-suggest slug from name when not customized
     useEffect(() => {
         if (!customSlug) {
@@ -119,50 +136,93 @@ export default function Page() {
         }
     }, [firstName, lastName, customSlug])
 
-    const saveAndPreview = async () => {
-        const s = slugify(slug)
-        const data = {
-            firstName,
-            preferredName,
-            middleInitial,
-            lastName,
-            divider,
-            mascot,
-            image: imageDataUrl || image || "/headshot.jpeg",
-            imageCaption,
-            personalBackground,
-            professionalBackground,
-            academicBackground,
-            primaryComputer,
-            courses,
-            quote,
-            quoteAuthor,
-            links: {
-                cltWeb: linkCltWeb,
-                github: linkGithub,
-                githubIo: linkGithubIo,
-                courseIo: linkCourseIo,
-                freeCodeCamp: linkFreeCodeCamp,
-                codecademy: linkCodecademy,
-                linkedIn: linkLinkedIn,
-            }
+    
+
+    // Persist editor state to localStorage so users can preview and keep editing later
+    const collectData = () => ({
+        firstName,
+        preferredName,
+        middleInitial,
+        lastName,
+        divider,
+        mascot,
+        image: imageDataUrl || image || "/headshot.jpeg",
+        imageCaption,
+        personalBackground,
+        professionalBackground,
+        academicBackground,
+        primaryComputer,
+        courses,
+        quote,
+        quoteAuthor,
+        links: {
+            cltWeb: linkCltWeb,
+            github: linkGithub,
+            githubIo: linkGithubIo,
+            courseIo: linkCourseIo,
+            freeCodeCamp: linkFreeCodeCamp,
+            codecademy: linkCodecademy,
+            linkedIn: linkLinkedIn,
         }
+    })
+
+    const applyDataToForm = (json: any) => {
         try {
-            localStorage.setItem(`intro:${s}`, JSON.stringify(data))
-            // Try to persist to server (database). Ignore failure and still navigate.
-            try {
-                await fetch(`/api/intros/${s}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                })
-            } catch {}
-            router.push(`/module-2/first-course-submission/introduction/${s}`)
-        } catch (e) {
-            console.error('Failed to save intro for preview', e)
-            alert('Unable to save your data for preview. Try again.')
-        }
+            setFirstName(json.firstName || '')
+            setPreferredName(json.preferredName || '')
+            setMiddleInitial(json.middleInitial || '')
+            setLastName(json.lastName || '')
+            setDivider(json.divider || '~')
+            setMascot(json.mascot || '')
+            if (json.image) {
+                setImage(json.image)
+                setImageDataUrl(typeof json.image === 'string' && json.image.startsWith('data:') ? json.image : '')
+            }
+            setImageCaption(json.imageCaption || '')
+            setPersonalBackground(json.personalBackground || '')
+            setPersonalStatement(json.personalStatement || '')
+            setProfessionalBackground(json.professionalBackground || '')
+            setAcademicBackground(json.academicBackground || '')
+            setPrimaryComputer(json.primaryComputer || '')
+            setCourses(Array.isArray(json.courses) ? json.courses : [])
+            setQuote(json.quote || '')
+            setQuoteAuthor(json.quoteAuthor || '')
+            const links = json.links || {}
+            setLinkCltWeb(links.cltWeb || '')
+            setLinkGithub(links.github || '')
+            setLinkGithubIo(links.githubIo || '')
+            setLinkCourseIo(links.courseIo || '')
+            setLinkFreeCodeCamp(links.freeCodeCamp || '')
+            setLinkCodecademy(links.codecademy || '')
+            setLinkLinkedIn(links.linkedIn || '')
+        } catch { /* ignore */ }
     }
+
+    // Auto-load any saved draft for the slug
+    useEffect(() => {
+        const s = slugify(slug)
+        try {
+            const raw = localStorage.getItem(`intro:${s}`)
+            if (raw) {
+                const json = JSON.parse(raw)
+                applyDataToForm(json)
+            }
+        } catch { /* ignore */ }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [slug])
+
+    // Debounced autosave of form data to localStorage by slug
+    useEffect(() => {
+        const s = slugify(slug)
+        const t = setTimeout(() => {
+            try {
+                localStorage.setItem(`intro:${s}`, JSON.stringify(collectData()))
+            } catch { /* ignore */ }
+        }, 500)
+        return () => clearTimeout(t)
+        // Include all fields that contribute to the data shape
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [slug, firstName, preferredName, middleInitial, lastName, divider, mascot, image, imageDataUrl, imageCaption, personalBackground, personalStatement, professionalBackground, academicBackground, primaryComputer, courses, quote, quoteAuthor, linkCltWeb, linkGithub, linkGithubIo, linkCourseIo, linkFreeCodeCamp, linkCodecademy, linkLinkedIn])
 
     const publish = async () => {
         const s = slugify(slug)
@@ -173,6 +233,10 @@ export default function Page() {
         if (!lastName) {
             alert('Please enter a last name.')
             return
+        }
+        if (slugAvailability === 'taken') {
+            const proceed = confirm('This slug already exists and will be overwritten. Continue?')
+            if (!proceed) return
         }
         const dataToSave = {
             firstName,
@@ -221,7 +285,7 @@ export default function Page() {
 
     return <>
         <div className={styles.page}>
-            <div className={styles.max}>
+            <div className={`${styles.max} ${styles.full}`}>
             <div className={styles.container}>
             <section className={styles.section}>
                 <div className={styles.header}>
@@ -229,22 +293,17 @@ export default function Page() {
                     <p className={styles.subtitle}>Fill out your details, then preview a polished introduction page.</p>
                 </div>
                 <h2>Form</h2>
-                <form onSubmit={(e) => e.preventDefault()} className={`${styles.form} ${styles.single}`}>
+                <form onSubmit={(e) => e.preventDefault()} className={styles.form}>
                     <div className={styles.card}>
                         <div className={styles.rowBetween}>
-                            <h3 style={{ margin: 0 }}>Edit Introduction</h3>
                             <div className={styles.toolbar}>
-                                <button
-                                    className={styles.btn}
-                                    type="button"
-                                    onClick={() => router.push('/module-2/first-course-submission/introduction/browse')}
-                                    title="Browse saved introductions"
-                                >
-                                    Browse intros
-                                </button>
+                                
+                                <span className={`${styles.badge} ${slugAvailability === 'available' ? styles.badgeSuccess : slugAvailability === 'taken' ? styles.badgeWarn : ''}`}>
+                                    {slugAvailability === 'checking' ? 'Checking…' : slugAvailability === 'available' ? 'Available' : slugAvailability === 'taken' ? 'Taken' : 'Unknown'}
+                                </span>
                                 <input
                                     className={styles.input}
-                                    style={{ maxWidth: 240 }}
+                                    style={{ flex: '1 1 260px', minWidth: 180 }}
                                     type="text"
                                     value={slug}
                                     onChange={(e) => {
@@ -254,15 +313,7 @@ export default function Page() {
                                     placeholder="my-intro-slug"
                                     title="Slug for the preview page"
                                 />
-                                <button
-                                    className={styles.btn}
-                                    type="button"
-                                    onClick={saveAndPreview}
-                                    aria-label="Open preview page"
-                                    title="Save data and open a full-page preview"
-                                >
-                                    Preview full page
-                                </button>
+                                
                                 <button
                                     className={`${styles.btn} ${styles.btnPrimary}`}
                                     type="button"
@@ -272,26 +323,7 @@ export default function Page() {
                                 >
                                     Publish
                                 </button>
-                                <button
-                                    className={styles.btn}
-                                    type="button"
-                                    onClick={() => {
-                                        const s = slugify(slug);
-                                        const url = typeof window !== 'undefined' ? `${window.location.origin}/module-2/first-course-submission/introduction/${s}` : '';
-                                        try {
-                                            if (navigator?.clipboard?.writeText) {
-                                                navigator.clipboard.writeText(url);
-                                                alert('Preview link copied');
-                                            } else {
-                                                prompt('Copy this URL', url);
-                                            }
-                                        } catch {}
-                                    }}
-                                    aria-label="Copy preview link"
-                                    title="Copy the preview URL to clipboard"
-                                >
-                                    Copy preview link
-                                </button>
+                                
                                 
                             </div>
                         </div>

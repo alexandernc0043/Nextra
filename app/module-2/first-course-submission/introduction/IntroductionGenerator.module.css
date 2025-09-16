@@ -13,6 +13,10 @@
   margin: 0 auto;
 }
 
+.full {
+  max-width: none;
+}
+
 .container {
   display: grid;
   grid-template-columns: 1fr;
@@ -57,10 +61,7 @@
   gap: 1.25rem;
 }
 
-.single {
-  max-width: 820px;
-  margin: 0 auto;
-}
+
 
 .gridTwo {
   display: grid;
@@ -215,37 +216,86 @@
   display: block;
 }
 
-.preview > ul {
+.preview ul {
   list-style: none;
-  padding: 0;
+  padding-left: 0;
   margin: 1rem 0;
   display: grid;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 
-.preview > ul > li {
+.preview ul > li {
   padding: 0.5rem 0.75rem;
   border: 1px solid rgba(0,0,0,0.08);
   border-radius: 8px;
   background: var(--nextra-background, #fff);
 }
 
-.preview > ul > li strong {
+.preview ul > li strong {
   color: var(--nextra-primary-700, #1f2937);
 }
 
-.preview > ul > li > ul {
+.preview ul > li > ul {
   margin-top: 0.5rem;
-  list-style: disc;
-  padding-left: 1.25rem;
+  list-style: none;
+  padding-left: 0;
+  display: grid;
+  gap: 0.5rem;
 }
 
-.preview > ul > li > ul > li {
+.preview ul > li > ul > li {
   margin: 0.25rem 0;
 }
 
 .preview figure {
-  margin: 1rem 0;
+  margin: 1rem auto;
+  max-width: 420px;
+}
+
+.nameLine {
+  font-size: clamp(1.35rem, 2.2vw + 0.9rem, 2.1rem);
+  font-weight: 700;
+  margin: 0.5rem 0 0.75rem;
+  text-align: center;
+}
+
+.linkRow {
+  display: flex;
+  gap: 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.linkRow a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.linkRow a:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.linkItem {
+  display: inline-flex;
+  align-items: center;
+  margin: 0.125rem 0.25rem;
+}
+
+.linkSep {
+  margin: 0 0.35rem;
+  color: rgba(0,0,0,0.55);
+}
+
+.quoteText {
+  text-align: center;
+}
+
+.quoteAuthor {
+  display: block;
+  text-align: center;
+  margin-top: .25rem;
+  color: rgba(0,0,0,0.7);
 }
 
 .preview img {
@@ -263,7 +313,7 @@
   display: flex;
   gap: .5rem;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .badge {
@@ -276,6 +326,18 @@
   background: var(--nextra-primary-50, #f9fafb);
   color: var(--nextra-primary-700, #1f2937);
   font-size: .85rem;
+}
+
+.badgeSuccess {
+  border-color: rgba(16, 185, 129, 0.4);
+  background: rgba(16, 185, 129, 0.12);
+  color: #065f46;
+}
+
+.badgeWarn {
+  border-color: rgba(245, 158, 11, 0.4);
+  background: rgba(245, 158, 11, 0.12);
+  color: #7c2d12;
 }
 
 .header {

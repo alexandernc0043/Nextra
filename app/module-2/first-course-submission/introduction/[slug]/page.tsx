@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import styles from "../IntroductionGenerator.module.css";
 
@@ -40,7 +40,6 @@ export default function IntroPreviewPage() {
   const [data, setData] = useState<IntroData | null>(null);
   const [notFound, setNotFound] = useState(false);
   const [today, setToday] = useState<string>("");
-  const importRef = useRef<HTMLInputElement | null>(null);
 
   // Try to load from server (DB), then query params (?src= or ?data=), hash (#data=), then localStorage
   useEffect(() => {
@@ -115,7 +114,7 @@ export default function IntroPreviewPage() {
     return (
       <div className={styles.card}>
         <p>Couldn’t find an introduction for this slug.</p>
-        <button className={styles.btn} onClick={() => router.push("/module-2/first-course-submission/introduction")}>Back to editor</button>
+        <button className={styles.btn} onClick={() => router.push("/module-2/first-course-submission/introduction/browse")}>Back to browse</button>
       </div>
     );
   }
@@ -162,85 +161,7 @@ export default function IntroPreviewPage() {
       <div className={styles.preview}>
         <div className={styles.rowBetween}>
         <div className={styles.toolbar}>
-          <button className={`${styles.btn} ${styles.btnGhost}`} onClick={() => router.push("/module-2/first-course-submission/introduction")}>Back to editor</button>
-          <button
-            className={styles.btn}
-            onClick={() => {
-              try {
-                const url = typeof window !== 'undefined' ? window.location.href : '';
-                if (navigator?.clipboard?.writeText) {
-                  navigator.clipboard.writeText(url);
-                  alert('Link copied to clipboard');
-                } else {
-                  // fallback
-                  prompt('Copy this URL', url);
-                }
-              } catch (e) {
-                console.error('Copy failed', e);
-                alert('Unable to copy link.');
-              }
-            }}
-          >
-            Copy link
-          </button>
-          <button
-            className={styles.btn}
-            onClick={async () => {
-              try {
-                const url = typeof window !== 'undefined' ? window.location.href : '';
-                if ((navigator as any)?.share) {
-                  await (navigator as any).share({ title: 'Intro Preview', url });
-                } else {
-                  if (navigator?.clipboard?.writeText) {
-                    await navigator.clipboard.writeText(url);
-                    alert('Link copied to clipboard');
-                  } else {
-                    prompt('Copy this URL', url);
-                  }
-                }
-              } catch (e) {
-                // user canceled or unsupported
-              }
-            }}
-          >
-            Share
-          </button>
-          <button
-            className={styles.btn}
-            onClick={() => importRef.current?.click()}
-          >
-            Import JSON
-          </button>
-          <input
-            ref={importRef}
-            type="file"
-            accept="application/json"
-            style={{ display: 'none' }}
-            onChange={async (e) => {
-              const file = e.target.files?.[0];
-              if (!file) return;
-              try {
-                const text = await file.text();
-                const json = JSON.parse(text);
-                // Trust preview shape; rely on API sanitization server-side
-                const merged = { ...(data || {}), ...(json || {}), slug } as IntroData & { slug?: string };
-                setData(merged);
-                try { localStorage.setItem(`intro:${slug}`, JSON.stringify(merged)); } catch {}
-                try {
-                  await fetch(`/api/intros/${slug}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(merged)
-                  })
-                } catch {}
-                alert('Imported and saved');
-              } catch {
-                alert('Invalid JSON');
-              } finally {
-                if (importRef.current) importRef.current.value = '';
-              }
-            }}
-          />
+          <button className={`${styles.btn} ${styles.btnGhost}`} onClick={() => router.push("/module-2/first-course-submission/introduction/browse")}>Back to browse</button>
           <button
             className={styles.btn}
             onClick={() => {
@@ -261,28 +182,35 @@ export default function IntroPreviewPage() {
             Export JSON
           </button>
         </div>
-        <span className={styles.badge}>Preview: {slug}</span>
+        <span className={styles.badge}>Preview</span>
       </div>
       <div className={styles.card}>
-        <p className={styles.muted} suppressHydrationWarning>
-          {firstName} {divider} {initials} {divider} {today}
+        <p className={styles.hint} suppressHydrationWarning>
+          I understand that what I put here is publicly available on the web and I won’t put anything here I don’t want the public to see {divider} {initials} {divider} {today}
         </p>
-        <h3 style={{ marginTop: 0 }}>
-          {firstName} {middleInitial}. “{preferredName}” {lastName} {divider} {mascot}
-        </h3>
-        <figure>
-          <img src={image || "/headshot.jpeg"} alt={imageCaption} width={500} height={500} />
-          {imageCaption ? (
-            <figcaption className={styles.hint}>
-              <em>{imageCaption}</em>
-            </figcaption>
-          ) : null}
-        </figure>
 
         <ul>
+          <li>
+            <div className={styles.nameLine}>
+              {firstName}{" "}
+              {middleInitial ? `${middleInitial}. ` : ""}
+              {preferredName ? `“${preferredName}” ` : ""}
+              {lastName} {divider} {mascot}
+            </div>
+          </li>
+          <li>
+            <figure>
+              <img src={image || "/headshot.jpeg"} alt={imageCaption} width={500} height={500} />
+              {imageCaption ? (
+                <figcaption className={styles.hint}>
+                  <em>{imageCaption}</em>
+                </figcaption>
+              ) : null}
+            </figure>
+          </li>
           {data.personalStatement ? (
             <li>
-              <p>{data.personalStatement}</p>
+              <p className={styles.quoteText}><em>“{data.personalStatement}”</em></p>
             </li>
           ) : null}
           <li>
@@ -318,25 +246,20 @@ export default function IntroPreviewPage() {
           </li>
           {(quote || quoteAuthor) && (
             <li>
-              <strong>Quote: </strong>
-              <blockquote style={{ margin: "0.5rem 0 0", padding: "0.25rem 0.5rem" }}>
-                <em>
-                  {quote ? `“${quote}”` : ""} {quoteAuthor ? `— ${quoteAuthor}` : ""}
-                </em>
-              </blockquote>
+              {quote ? <div className={styles.quoteText}><em>“{quote}”</em></div> : null}
+              {quoteAuthor ? <span className={styles.quoteAuthor}>— {quoteAuthor}</span> : null}
             </li>
           )}
           {linksArr.length > 0 && (
             <li>
-              <strong>Links: </strong>
-              {linksArr.map((l, idx) => (
-                <span key={`${l.label}-${idx}`}>
-                  <a href={l.href} target="_blank" rel="noopener noreferrer">
-                    {l.label}
-                  </a>
-                  {idx < linksArr.length - 1 ? ` ${divider} ` : null}
-                </span>
-              ))}
+              <div className={styles.linkRow}>
+                {linksArr.map((l, idx) => (
+                  <span key={`${l.label}-${idx}`} className={styles.linkItem}>
+                    <a href={l.href} target="_blank" rel="noopener noreferrer">{l.label}</a>
+                    {idx < linksArr.length - 1 ? <span className={styles.linkSep}>{` ${divider} `}</span> : null}
+                  </span>
+                ))}
+              </div>
             </li>
           )}
         </ul>
