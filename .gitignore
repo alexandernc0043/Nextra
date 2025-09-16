@@ -2,3 +2,5 @@ node_modules/
 .next
 .idea
 _pagefind/
+.vercel
+.env*.local

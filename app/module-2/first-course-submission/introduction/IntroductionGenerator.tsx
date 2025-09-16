@@ -1,16 +1,21 @@
 "use client";
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import styles from './IntroductionGenerator.module.css'
 type Course = { dept: string; number: string; name: string; reason: string }
 
 export default function Page() {
+    const router = useRouter();
     const [firstName, setFirstName] = useState("Alexander");
     const [preferredName, setPreferredName] = useState("Alex");
     const [middleInitial, setMiddleInitial] = useState("J");
     const [lastName, setLastName] = useState("Prechtel");
+    const [slug, setSlug] = useState("alexander-prechtel");
+    const [customSlug, setCustomSlug] = useState(false);
     const [divider, setDivider] = useState("~");
     const [mascot, setMascot] = useState("Advanced Pegasus");
     const [image, setImage] = useState("/headshot.jpeg")
+    const [imageDataUrl, setImageDataUrl] = useState<string>("");
     const [imageFilename, setImageFilename] = useState<string>(() => {
         const parts = "/headshot.jpeg".split("/")
         return parts[parts.length - 1] || "image"
@@ -26,6 +31,14 @@ export default function Page() {
         imageObjectUrlRef.current = url
         setImage(url)
         setImageFilename(file.name)
+        // Also read as data URL for persistence across reloads
+        const reader = new FileReader()
+        reader.onload = () => {
+            if (typeof reader.result === 'string') {
+                setImageDataUrl(reader.result)
+            }
+        }
+        reader.readAsDataURL(file)
     }
     useEffect(() => {
         return () => {
@@ -34,7 +47,11 @@ export default function Page() {
             }
         }
     }, [])
+    useEffect(() => {
+        setToday(new Date().toLocaleDateString())
+    }, [])
     const [imageCaption, setImageCaption] = useState("At the beach on the eastern coast of Florida (2024)")
+    const [today, setToday] = useState("")
     const [personalBackground, setPersonalBackground] = useState("Grew up north of Charlotte, and have always had a love of computers.")
     const [personalStatement, setPersonalStatement] = useState("I’m a junior at UNC Charlotte studying Computer Science with a focus in Cybersecurity. I’m excited to collaborate and build secure, user‑friendly systems this semester.")
     const [professionalBackground, setProfessionalBackground] = useState("This is my first semester as an Instructional Assistant/Teachers Assistant, but before that I was a Peer Tutor for CCI.")
@@ -88,8 +105,22 @@ export default function Page() {
     const [linkFreeCodeCamp, setLinkFreeCodeCamp] = useState("https://www.freecodecamp.org/aprechte")
     const [linkCodecademy, setLinkCodecademy] = useState("https://www.codecademy.com/profiles/aprechte")
     const [linkLinkedIn, setLinkLinkedIn] = useState("https://www.linkedin.com/in/alexander-prechtel-b4a0a9283/")
-    const exportToJson = () => {
-        const inferredFilename = imageFilename || (image ? (image.split("/").pop() || "image") : "image")
+    
+
+    const slugify = (v: string) => v
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '') || 'intro';
+
+    // Auto-suggest slug from name when not customized
+    useEffect(() => {
+        if (!customSlug) {
+            setSlug(slugify([firstName, lastName].filter(Boolean).join('-')))
+        }
+    }, [firstName, lastName, customSlug])
+
+    const saveAndPreview = async () => {
+        const s = slugify(slug)
         const data = {
             firstName,
             preferredName,
@@ -97,7 +128,7 @@ export default function Page() {
             lastName,
             divider,
             mascot,
-            image: `images/${inferredFilename}`,
+            image: imageDataUrl || image || "/headshot.jpeg",
             imageCaption,
             personalBackground,
             professionalBackground,
@@ -116,37 +147,153 @@ export default function Page() {
                 linkedIn: linkLinkedIn,
             }
         }
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" })
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement("a")
-        const safeName = [firstName, middleInitial, lastName].filter(Boolean).join("_") || "introduction"
-        a.href = url
-        a.download = `${safeName}.json`
-        document.body.appendChild(a)
-        a.click()
-        a.remove()
-        URL.revokeObjectURL(url)
+        try {
+            localStorage.setItem(`intro:${s}`, JSON.stringify(data))
+            // Try to persist to server (database). Ignore failure and still navigate.
+            try {
+                await fetch(`/api/intros/${s}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                })
+            } catch {}
+            router.push(`/module-2/first-course-submission/introduction/${s}`)
+        } catch (e) {
+            console.error('Failed to save intro for preview', e)
+            alert('Unable to save your data for preview. Try again.')
+        }
+    }
+
+    const publish = async () => {
+        const s = slugify(slug)
+        if (!firstName && !preferredName) {
+            alert('Please enter at least a first or preferred name.')
+            return
+        }
+        if (!lastName) {
+            alert('Please enter a last name.')
+            return
+        }
+        const dataToSave = {
+            firstName,
+            preferredName,
+            middleInitial,
+            lastName,
+            divider,
+            mascot,
+            image: imageDataUrl || image || "/headshot.jpeg",
+            imageCaption,
+            personalBackground,
+            professionalBackground,
+            academicBackground,
+            primaryComputer,
+            courses,
+            quote,
+            quoteAuthor,
+            links: {
+                cltWeb: linkCltWeb,
+                github: linkGithub,
+                githubIo: linkGithubIo,
+                courseIo: linkCourseIo,
+                freeCodeCamp: linkFreeCodeCamp,
+                codecademy: linkCodecademy,
+                linkedIn: linkLinkedIn,
+            }
+        }
+        try {
+            const r = await fetch(`/api/intros/${s}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dataToSave)
+            })
+            if (!r.ok) throw new Error('Publish failed')
+            const url = `${window.location.origin}/module-2/first-course-submission/introduction/${s}`
+            try {
+                await navigator.clipboard.writeText(url)
+                alert('Published! Link copied to clipboard.')
+            } catch {
+                alert(`Published! Visit: ${url}`)
+            }
+        } catch (e) {
+            alert('Publishing failed. Check your database configuration.')
+        }
     }
 
     return <>
-        <div className={styles.container}>
+        <div className={styles.page}>
+            <div className={styles.max}>
+            <div className={styles.container}>
             <section className={styles.section}>
+                <div className={styles.header}>
+                    <h2 className={styles.title}>Introduction Generator</h2>
+                    <p className={styles.subtitle}>Fill out your details, then preview a polished introduction page.</p>
+                </div>
                 <h2>Form</h2>
-                <form onSubmit={(e) => e.preventDefault()} className={styles.form}>
+                <form onSubmit={(e) => e.preventDefault()} className={`${styles.form} ${styles.single}`}>
                     <div className={styles.card}>
                         <div className={styles.rowBetween}>
                             <h3 style={{ margin: 0 }}>Edit Introduction</h3>
-                            {/* <div>
+                            <div className={styles.toolbar}>
                                 <button
+                                    className={styles.btn}
                                     type="button"
-                                    onClick={exportToJson}
-
-                                    aria-label="Export introduction to JSON"
-                                    title="Download your introduction data as a JSON file"
+                                    onClick={() => router.push('/module-2/first-course-submission/introduction/browse')}
+                                    title="Browse saved introductions"
                                 >
-                                    Export JSON
+                                    Browse intros
                                 </button>
-                            </div> */}
+                                <input
+                                    className={styles.input}
+                                    style={{ maxWidth: 240 }}
+                                    type="text"
+                                    value={slug}
+                                    onChange={(e) => {
+                                        setSlug(e.target.value);
+                                        setCustomSlug(true);
+                                    }}
+                                    placeholder="my-intro-slug"
+                                    title="Slug for the preview page"
+                                />
+                                <button
+                                    className={styles.btn}
+                                    type="button"
+                                    onClick={saveAndPreview}
+                                    aria-label="Open preview page"
+                                    title="Save data and open a full-page preview"
+                                >
+                                    Preview full page
+                                </button>
+                                <button
+                                    className={`${styles.btn} ${styles.btnPrimary}`}
+                                    type="button"
+                                    onClick={publish}
+                                    aria-label="Publish introduction"
+                                    title="Save to the database and copy a shareable link"
+                                >
+                                    Publish
+                                </button>
+                                <button
+                                    className={styles.btn}
+                                    type="button"
+                                    onClick={() => {
+                                        const s = slugify(slug);
+                                        const url = typeof window !== 'undefined' ? `${window.location.origin}/module-2/first-course-submission/introduction/${s}` : '';
+                                        try {
+                                            if (navigator?.clipboard?.writeText) {
+                                                navigator.clipboard.writeText(url);
+                                                alert('Preview link copied');
+                                            } else {
+                                                prompt('Copy this URL', url);
+                                            }
+                                        } catch {}
+                                    }}
+                                    aria-label="Copy preview link"
+                                    title="Copy the preview URL to clipboard"
+                                >
+                                    Copy preview link
+                                </button>
+                                
+                            </div>
                         </div>
 
                         <div className={styles.gridTwo}>
@@ -593,90 +740,9 @@ export default function Page() {
                 </form>
             </section>
 
-            <section className={styles.section}>
-                <h2>Example</h2>
-                <div>
-                    <div className={`${styles.card} ${styles.preview}`}>
-                        <p className={styles.hint}>I understand that what I put here is publicly available
-                            on the web and I won’t put anything here I don’t
-                            want the public to see {divider} {[
-                                firstName?.trim()?.[0],
-                                (middleInitial || "").trim()?.[0],
-                                lastName?.trim()?.[0]
-                            ].filter(Boolean).join("")} {divider} {new Date().toLocaleDateString()}</p>
-                        <h3 style={{ marginTop: 0 }}>{firstName} {middleInitial}. &#34;{preferredName}&#34; {lastName} {divider} {mascot}</h3>
-                        <figure>
-                            {image === "" ? <img src={"/headshot.jpeg"} alt={imageCaption} width={500} height={500} /> :
-                                <img src={image} alt={imageCaption} width={500} height={500} />}
-                            <figcaption className={styles.hint}>
-                                <em>{imageCaption}</em>
-                            </figcaption>
-                        </figure>
-
-                        <ul>
-                            <li>
-                                {personalStatement && (
-                                    <p>{personalStatement}</p>
-                                )}
-                            </li>
-                            <li><strong>Personal
-                                Background: </strong>{personalBackground === "" ? "None." : personalBackground}
-                            </li>
-                            <li><strong>Professional
-                                Background: </strong>{professionalBackground === "" ? "None." : professionalBackground}
-                            </li>
-                            <li><strong>Academic
-                                Background: </strong>{academicBackground === "" ? "None." : academicBackground}
-                            </li>
-                            <li><strong>Primary Computer: </strong>{primaryComputer === "" ? "None." : primaryComputer}
-                            </li>
-                            <li>
-                                <strong>Courses:</strong>
-                                <ul style={{ marginTop: '0.25rem' }}>
-                                    {courses.length === 0 ? <li>No courses.</li> : courses.map(({
-                                        dept,
-                                        number,
-                                        name,
-                                        reason
-                                    }, index) => <li
-                                        key={index}><strong>{dept} {number} &mdash; {name}</strong>: {reason}</li>)}
-                                </ul>
-                            </li>
-                            {(quote || quoteAuthor) && (
-                                <li>
-                                    <strong>Quote: </strong>
-                                    <blockquote style={{ margin: '0.5rem 0 0', padding: '0.25rem 0.5rem' }}>
-                                        <em>
-                                            {quote ? `“${quote}”` : ''} {quoteAuthor ? `— ${quoteAuthor}` : ''}
-                                        </em>
-                                    </blockquote>
-                                </li>
-                            )}
-                            {(linkCltWeb || linkGithub || linkGithubIo || linkCourseIo || linkFreeCodeCamp || linkCodecademy || linkLinkedIn) && (
-                                <li>
-                                    <strong>Links: </strong>
-                                    {(() => {
-                                        const linksArr: { label: string; href: string }[] = [];
-                                        if (linkCltWeb) linksArr.push({ label: 'CLT Web', href: linkCltWeb });
-                                        if (linkGithub) linksArr.push({ label: 'GitHub', href: linkGithub });
-                                        if (linkGithubIo) linksArr.push({ label: 'GitHub.io', href: linkGithubIo });
-                                        if (linkCourseIo) linksArr.push({ label: 'Course.io', href: linkCourseIo });
-                                        if (linkFreeCodeCamp) linksArr.push({ label: 'freeCodeCamp', href: linkFreeCodeCamp });
-                                        if (linkCodecademy) linksArr.push({ label: 'Codecademy', href: linkCodecademy });
-                                        if (linkLinkedIn) linksArr.push({ label: 'LinkedIn', href: linkLinkedIn });
-                                        return linksArr.map((l, idx) => (
-                                            <span key={`${l.label}-${idx}`}>
-                                                <a href={l.href} target="_blank" rel="noopener noreferrer">{l.label}</a>
-                                                {idx < linksArr.length - 1 ? ` ${divider} ` : null}
-                                            </span>
-                                        ));
-                                    })()}
-                                </li>
-                            )}
-                        </ul>
-                    </div>
-                </div>
-            </section>
+            
+            </div>
+            </div>
         </div>
     </>
 }
