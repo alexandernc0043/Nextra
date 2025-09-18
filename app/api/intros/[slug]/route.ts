@@ -1,15 +1,21 @@
-import { NextResponse } from 'next/server'
-import { getDb } from '../../../../lib/mongodb'
+import {NextResponse} from 'next/server'
+import {getAuthContext} from '../../../../lib/auth'
+import {getDb} from '../../../../lib/mongodb'
 
-export async function GET(_req: Request, { params }: any) {
+type RouteContext = {
+  params: Promise<{ slug: string }>
+}
+
+export async function GET(_req: Request, context: RouteContext) {
   try {
+    const { slug } = await context.params
     const db = await getDb()
-    const doc = await db.collection('intros').findOne({ slug: params.slug })
+    const doc = await db.collection('intros').findOne({ slug })
     if (!doc) {
       return NextResponse.json({ error: 'Not found' }, { status: 404 })
     }
     // Remove internal fields
-    const { _id, ...rest } = doc as any
+    const { _id, updatedBy, lastModeratedBy, ...rest } = doc as any
     return NextResponse.json(rest, { status: 200 })
   } catch (e: any) {
     console.error('GET intro failed', e)
@@ -17,26 +23,64 @@ export async function GET(_req: Request, { params }: any) {
   }
 }
 
-export async function PUT(req: Request, { params }: any) {
+export async function PUT(req: Request, context: RouteContext) {
   try {
+    const { slug } = await context.params
+    const { userId, canModerateIntros, isAdmin } = await getAuthContext()
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
     if (!process.env.MONGODB_URI) {
       return NextResponse.json({ error: 'Database not configured' }, { status: 500 })
     }
     const body = await req.json()
     const payload = sanitizeIntro(body)
-    payload.slug = params.slug
+    payload.slug = slug
+    payload.updatedBy = userId
+    if (isAdmin) {
+      payload.lastModeratedBy = userId
+    }
     const db = await getDb()
     await db.collection('intros').updateOne(
-      { slug: params.slug },
+      { slug },
       {
-        $set: { ...payload, slug: params.slug, updatedAt: new Date() },
-        $setOnInsert: { createdAt: new Date() },
+        $set: { ...payload, slug, updatedAt: new Date() },
+        $setOnInsert: { createdAt: new Date(), createdBy: userId },
       },
       { upsert: true }
     )
-    return NextResponse.json({ ok: true, slug: params.slug }, { status: 200 })
+    return NextResponse.json({ ok: true, slug }, { status: 200 })
   } catch (e: any) {
     console.error('PUT intro failed', e)
+    return NextResponse.json({ error: 'Server error' }, { status: 500 })
+  }
+}
+
+export async function DELETE(_req: Request, context: RouteContext) {
+  try {
+    const { slug } = await context.params
+    const { userId, canModerateIntros } = await getAuthContext()
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    const db = await getDb()
+    const doc = await db.collection('intros').findOne(
+      { slug },
+      { projection: { slug: 1, createdBy: 1 } }
+    )
+    if (!doc) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    }
+    if (!canModerateIntros && doc.createdBy !== userId) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+    const result = await db.collection('intros').deleteOne({ slug })
+    if (result.deletedCount === 0) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    }
+    return NextResponse.json({ ok: true })
+  } catch (e: any) {
+    console.error('DELETE intro failed', e)
     return NextResponse.json({ error: 'Server error' }, { status: 500 })
   }
 }

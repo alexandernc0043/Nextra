@@ -1,8 +1,10 @@
-import { NextResponse } from 'next/server'
-import { getDb } from '../../../lib/mongodb'
+import {NextResponse} from 'next/server'
+import {getAuthContext} from '../../../lib/auth'
+import {getDb} from '../../../lib/mongodb'
 
 export async function GET(req: Request) {
   try {
+    const {canModerateIntros} = await getAuthContext()
     const { searchParams } = new URL(req.url)
     const q = (searchParams.get('q') || '').trim()
     const limit = Math.min(parseInt(searchParams.get('limit') || '25', 10) || 25, 100)
@@ -26,7 +28,7 @@ export async function GET(req: Request) {
       limit,
     })
     const items = await cursor.toArray()
-    return NextResponse.json({ items })
+    return NextResponse.json({ items, canDelete: canModerateIntros })
   } catch (e) {
     console.error('List intros failed', e)
     return NextResponse.json({ error: 'Server error' }, { status: 500 })

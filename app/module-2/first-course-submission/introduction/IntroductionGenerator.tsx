@@ -1,9 +1,11 @@
 "use client";
+import {SignInButton, SignedIn, SignedOut, useAuth, Protect} from '@clerk/nextjs'
 import { useState, useEffect, useRef } from 'react';
 import styles from './IntroductionGenerator.module.css'
 type Course = { dept: string; number: string; name: string; reason: string }
 
 export default function Page() {
+    const { isSignedIn } = useAuth()
     const [firstName, setFirstName] = useState("Alexander");
     const [preferredName, setPreferredName] = useState("Alex");
     const [middleInitial, setMiddleInitial] = useState("J");
@@ -225,6 +227,10 @@ export default function Page() {
     }, [slug, firstName, preferredName, middleInitial, lastName, divider, mascot, image, imageDataUrl, imageCaption, personalBackground, personalStatement, professionalBackground, academicBackground, primaryComputer, courses, quote, quoteAuthor, linkCltWeb, linkGithub, linkGithubIo, linkCourseIo, linkFreeCodeCamp, linkCodecademy, linkLinkedIn])
 
     const publish = async () => {
+        if (!isSignedIn) {
+            alert('Please sign in to publish your introduction.')
+            return
+        }
         const s = slugify(slug)
         if (!firstName && !preferredName) {
             alert('Please enter at least a first or preferred name.')
@@ -270,7 +276,17 @@ export default function Page() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dataToSave)
             })
-            if (!r.ok) throw new Error('Publish failed')
+            if (!r.ok) {
+                if (r.status === 401) {
+                    alert('Please sign in to publish your introduction.')
+                    return
+                }
+                if (r.status === 403) {
+                    alert('You do not have permission to publish this introduction.')
+                    return
+                }
+                throw new Error('Publish failed')
+            }
             const url = `${window.location.origin}/module-2/first-course-submission/introduction/${s}`
             try {
                 await navigator.clipboard.writeText(url)
@@ -284,7 +300,11 @@ export default function Page() {
     }
 
     return <>
-        <div className={styles.page}>
+    <SignedOut>
+        <h3>You must be signed in to use this page.</h3>
+    </SignedOut>
+    <Protect>
+    <div className={styles.page}>
             <div className={`${styles.max} ${styles.full}`}>
             <div className={styles.container}>
             <section className={styles.section}>
@@ -314,15 +334,29 @@ export default function Page() {
                                     title="Slug for the preview page"
                                 />
                                 
-                                <button
-                                    className={`${styles.btn} ${styles.btnPrimary}`}
-                                    type="button"
-                                    onClick={publish}
-                                    aria-label="Publish introduction"
-                                    title="Save to the database and copy a shareable link"
-                                >
-                                    Publish
-                                </button>
+                                <SignedIn>
+                                    <button
+                                        className={`${styles.btn} ${styles.btnPrimary}`}
+                                        type="button"
+                                        onClick={publish}
+                                        aria-label="Publish introduction"
+                                        title="Save to the database and copy a shareable link"
+                                    >
+                                        Publish
+                                    </button>
+                                </SignedIn>
+                                <SignedOut>
+                                    <SignInButton mode="modal">
+                                        <button
+                                            className={`${styles.btn} ${styles.btnPrimary}`}
+                                            type="button"
+                                            aria-label="Sign in to publish introduction"
+                                            title="Sign in to publish introduction"
+                                        >
+                                            Sign in to publish
+                                        </button>
+                                    </SignInButton>
+                                </SignedOut>
                                 
                                 
                             </div>
@@ -776,5 +810,7 @@ export default function Page() {
             </div>
             </div>
         </div>
+    </Protect>
+
     </>
 }

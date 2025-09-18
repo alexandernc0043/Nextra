@@ -176,6 +176,16 @@
   background: linear-gradient(180deg, #7cb3fb, #4f8ff7);
 }
 
+.btnDanger {
+  border-color: rgba(239, 68, 68, 0.6);
+  background: linear-gradient(180deg, #f87171, #ef4444);
+  color: #fff;
+}
+
+.btnDanger:hover {
+  background: linear-gradient(180deg, #fca5a5, #f87171);
+}
+
 .btnGhost {
   background: transparent;
 }
