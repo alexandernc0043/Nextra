@@ -41,6 +41,13 @@ export async function PUT(req: Request, context: RouteContext) {
       payload.lastModeratedBy = userId
     }
     const db = await getDb()
+    const existing = await db.collection('intros').findOne(
+      { slug },
+      { projection: { createdBy: 1 } }
+    )
+    if (existing && existing.createdBy && existing.createdBy !== userId && !canModerateIntros) {
+      return NextResponse.json({ error: 'Slug already claimed' }, { status: 403 })
+    }
     await db.collection('intros').updateOne(
       { slug },
       {

@@ -95,6 +95,7 @@ export default function Page() {
             reason: "I needed to take a science course with its lab."
         },
     ])
+    const [showCourses, setShowCourses] = useState(true)
     // New: quote and links
     const [quote, setQuote] = useState("Do what is right, not what is easy nor what is popular.")
     const [quoteAuthor, setQuoteAuthor] = useState("Roy T. Bennett")
@@ -241,8 +242,8 @@ export default function Page() {
             return
         }
         if (slugAvailability === 'taken') {
-            const proceed = confirm('This slug already exists and will be overwritten. Continue?')
-            if (!proceed) return
+            alert("Slug is already taken, try another slug.");
+            return;
         }
         const dataToSave = {
             firstName,
@@ -251,7 +252,7 @@ export default function Page() {
             lastName,
             divider,
             mascot,
-            image: imageDataUrl || image || "/headshot.jpeg",
+            image: imageDataUrl || image || "https://commons.wikimedia.org/wiki/File:Placeholder_view_vector.svg",
             imageCaption,
             personalBackground,
             professionalBackground,
@@ -363,102 +364,95 @@ export default function Page() {
                         </div>
 
                         <div className={styles.gridTwo}>
-                            {/* <div className={styles.nameGrid}> */}
-                            <div className={styles.field}>
-                                <label className={styles.label} htmlFor="name">First Name</label>
-                                <input
-                                    className={styles.input}
-                                    id="name"
-                                    type="text"
-                                    value={firstName}
-                                    onChange={(e) => setFirstName(e.target.value)}
-                                    placeholder="Your name"
-                                    title="Enter your legal first name"
-                                />
+                            <div className={`${styles.inlineRowNames} ${styles.fullSpan}`}>
+                                <div className={styles.field}>
+                                    <label className={styles.label} htmlFor="name">First Name</label>
+                                    <input
+                                        className={styles.input}
+                                        id="name"
+                                        type="text"
+                                        value={firstName}
+                                        onChange={(e) => setFirstName(e.target.value)}
+                                        placeholder="Your name"
+                                        title="Enter your legal first name"
+                                    />
+                                </div>
+                                <div className={`${styles.field} ${styles.mi}`}>
+                                    <label className={styles.label} htmlFor="middle">Middle Initial</label>
+                                    <input
+                                        className={styles.input}
+                                        id="middle"
+                                        type="text"
+                                        value={middleInitial}
+                                        onChange={(e) => setMiddleInitial(e.target.value)}
+                                        placeholder="Your middle initial."
+                                        title="Provide your middle initial, if applicable"
+                                    />
+                                </div>
+                                <div className={styles.field}>
+                                    <label className={styles.label} htmlFor="preferred">Preferred Name</label>
+                                    <input
+                                        className={styles.input}
+                                        id="preferred"
+                                        type="text"
+                                        value={preferredName}
+                                        onChange={(e) => setPreferredName(e.target.value)}
+                                        placeholder="Your preferred name."
+                                        title="What you prefer to be called"
+                                    />
+                                </div>
+                                <div className={styles.field}>
+                                    <label className={styles.label} htmlFor="last">Last Name</label>
+                                    <input
+                                        className={styles.input}
+                                        id="last"
+                                        type="text"
+                                        value={lastName}
+                                        onChange={(e) => setLastName(e.target.value)}
+                                        placeholder="Your last name."
+                                        title="Enter your family/last name"
+                                    />
+                                </div>
                             </div>
-                            <div className={`${styles.field}`}>
-                                <label className={styles.label} htmlFor="middle">Middle Initial</label>
-                                <input
-                                    className={styles.input}
-                                    id="middle"
-                                    type="text"
-                                    value={middleInitial}
-                                    onChange={(e) => setMiddleInitial(e.target.value)}
-                                    placeholder="Your middle initial."
-                                    title="Provide your middle initial, if applicable"
-                                />
-                            </div>
-                            <div className={styles.field}>
-                                <label className={styles.label} htmlFor="preferred">Preferred Name</label>
-                                <input
-                                    className={styles.input}
-                                    id="preferred"
-                                    type="text"
-                                    value={preferredName}
-                                    onChange={(e) => setPreferredName(e.target.value)}
-                                    placeholder="Your preferred name."
-                                    title="What you prefer to be called"
-                                />
-                            </div>
-                            <div className={styles.field}>
-                                <label className={styles.label} htmlFor="last">Last Name</label>
-                                <input
-                                    className={styles.input}
-                                    id="last"
-                                    type="text"
-                                    value={lastName}
-                                    onChange={(e) => setLastName(e.target.value)}
-                                    placeholder="Your last name."
-                                    title="Enter your family/last name"
-                                />
-                            </div>
-
-
-                            <div className={styles.field}>
-                                <label className={styles.label} htmlFor="mascot">Mascot</label>
-                                <input
-                                    className={styles.input}
-                                    id="mascot"
-                                    type="text"
-                                    value={mascot}
-                                    onChange={(e) => setMascot(e.target.value)}
-                                    placeholder="Your mascot."
-                                    title="Your chosen mascot for the course"
-
-                                />
-                            </div>
-                            <div className={styles.field}>
-                                <label className={styles.label}
-                                    htmlFor="divider">Divider</label>
-                                <input
-                                    className={styles.input}
-                                    id="divider"
-                                    type="text"
-                                    value={divider}
-                                    onChange={(e) => setDivider(e.target.value)}
-                                    placeholder="Divider"
-                                    title="Symbol used to separate sections (e.g., ~ or |)"
-
-                                />
-                            </div>
-
-
-                            <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
-                                <label className={styles.label} htmlFor="imageFile">Upload
-                                    Image</label>
-                                <input
-                                    className={styles.file}
-                                    id="imageFile"
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleImageFileChange}
-
-                                />
-                                <p className={styles.hint}>PNG, JPG, or GIF. Stays local in your
-                                    browser.</p>
+                            <div className={`${styles.inlineRowMascot} ${styles.fullSpan}`}>
+                                <div className={styles.field}>
+                                    <label className={styles.label} htmlFor="mascot">Mascot</label>
+                                    <input
+                                        className={styles.input}
+                                        id="mascot"
+                                        type="text"
+                                        value={mascot}
+                                        onChange={(e) => setMascot(e.target.value)}
+                                        placeholder="Your mascot."
+                                        title="Your chosen mascot for the course"
+                                    />
+                                </div>
+                                <div className={`${styles.field} ${styles.mi}`}>
+                                    <label className={styles.label} htmlFor="divider">Divider</label>
+                                    <input
+                                        className={styles.input}
+                                        id="divider"
+                                        type="text"
+                                        value={divider}
+                                        onChange={(e) => setDivider(e.target.value)}
+                                        placeholder="Divider"
+                                        title="Symbol used to separate sections (e.g., ~ or |)"
+                                    />
+                                </div>
+                                <div className={styles.field}>
+                                    <label className={styles.label} htmlFor="imageFile">Upload Image</label>
+                                    <input
+                                        className={styles.file}
+                                        id="imageFile"
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageFileChange}
+                                    />
+                                    <p className={styles.hint}>PNG, JPG, or GIF. Stays local in your browser.</p>
+                                </div>
                             </div>
 
-                            <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
+                            <div className={`${styles.field} ${styles.fullSpan}`}>
                                 <label className={styles.label} htmlFor="imageCaption">Image
                                     Caption</label>
                                 <input
@@ -472,7 +466,7 @@ export default function Page() {
 
                                 />
                             </div>
-                            <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
+                            <div className={`${styles.field} ${styles.fullSpan}`}>
                                 <label className={styles.label} htmlFor="personalStatement">Personal
                                     Statement</label>
                                 <textarea
@@ -487,7 +481,7 @@ export default function Page() {
                                 />
                             </div>
 
-                            <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
+                            <div className={`${styles.field} ${styles.fullSpan}`}>
                                 <label className={styles.label} htmlFor="personalBackground">Personal
                                     Background</label>
                                 <textarea
@@ -503,7 +497,7 @@ export default function Page() {
 
 
 
-                            <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
+                            <div className={`${styles.field} ${styles.fullSpan}`}>
                                 <label className={styles.label}
                                     htmlFor="professionalBackground">Professional
                                     Background</label>
@@ -519,7 +513,7 @@ export default function Page() {
                                 />
                             </div>
 
-                            <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
+                            <div className={`${styles.field} ${styles.fullSpan}`}>
                                 <label className={styles.label} htmlFor="academicBackground">Academic
                                     Background</label>
                                 <textarea
@@ -534,7 +528,7 @@ export default function Page() {
                                 />
                             </div>
 
-                            <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
+                            <div className={`${styles.field} ${styles.fullSpan}`}>
                                 <label className={styles.label} htmlFor="primaryComputer">Primary
                                     Computer</label>
                                 <input
@@ -552,136 +546,9 @@ export default function Page() {
 
                         <hr className={styles.divider} />
 
-                        <div className={styles.courses}>
-                            <div className={styles.rowBetween}>
-                                <h4 style={{ fontSize: '1rem', fontWeight: 600, margin: 0 }}>Courses</h4>
-                                <button
-                                    className={styles.btn}
-                                    type="button"
-                                    onClick={() => setCourses(prev => [...prev, {
-                                        name: "",
-                                        reason: "",
-                                        dept: "",
-                                        number: ""
-                                    }])}
-
-                                    aria-label="Add course"
-                                >
-                                    + Add Course
-                                </button>
-                            </div>
-
-                            {courses.length === 0 && (
-                                <p className={styles.hint}>No courses added. Use "Add Course" to include one.</p>
-                            )}
-
-                            <div>
-                                {courses.map((c, idx) => (
-                                    <div key={idx} className={styles.courseCard}>
-                                        <div className={styles.courseHeader}>
-                                            <span className={styles.muted}>Course {idx + 1}</span>
-                                            <button
-                                                className={styles.btn}
-                                                type="button"
-                                                onClick={() => setCourses(prev => prev.filter((_, i) => i !== idx))}
-
-                                                aria-label={`Remove course ${idx + 1}`}
-                                            >
-                                                Remove
-                                            </button>
-                                        </div>
-                                        <div className={styles.courseGrid}>
-                                            <div className={styles.field}>
-                                                <label className={styles.label}
-                                                    htmlFor={`course-dept-${idx}`}>Department Prefix</label>
-                                                <input
-                                                    className={styles.input}
-                                                    id={`course-dept-${idx}`}
-                                                    type="text"
-                                                    value={c.dept}
-                                                    onChange={(e) => {
-                                                        const v = e.target.value;
-                                                        setCourses(prev => prev.map((pc, i) => i === idx ? ({
-                                                            ...pc,
-                                                            dept: v
-                                                        }) : pc));
-                                                    }}
-                                                    placeholder="Prefix"
-                                                    title="Department prefix (e.g., ITIS, MATH)"
-
-                                                />
-                                            </div>
-                                            <div className={styles.field}>
-                                                <label className={styles.label}
-                                                    htmlFor={`course-number-${idx}`}>Course #</label>
-                                                <input
-                                                    className={styles.input}
-                                                    id={`course-number-${idx}`}
-                                                    type="text"
-                                                    value={c.number}
-                                                    onChange={(e) => {
-                                                        const v = e.target.value;
-                                                        setCourses(prev => prev.map((pc, i) => i === idx ? ({
-                                                            ...pc,
-                                                            number: v
-                                                        }) : pc));
-                                                    }}
-                                                    placeholder="####"
-                                                    title="Numeric course identifier (e.g., 3135)"
-
-                                                />
-                                            </div>
-                                            <div className={`${styles.field} ${styles.full}`}>
-                                                <label className={styles.label}
-                                                    htmlFor={`course-name-${idx}`}>Course Name</label>
-                                                <input
-                                                    className={styles.input}
-                                                    id={`course-name-${idx}`}
-                                                    type="text"
-                                                    value={c.name}
-                                                    onChange={(e) => {
-                                                        const v = e.target.value;
-                                                        setCourses(prev => prev.map((pc, i) => i === idx ? ({
-                                                            ...pc,
-                                                            name: v
-                                                        }) : pc));
-                                                    }}
-                                                    placeholder="Name of the course..."
-                                                    title="Full course title (no section)"
-
-                                                />
-                                            </div>
-                                            <div className={`${styles.field} ${styles.full}`}>
-                                                <label className={styles.label}
-                                                    htmlFor={`course-reason-${idx}`}>Reason for taking</label>
-                                                <textarea
-                                                    className={styles.input}
-                                                    id={`course-reason-${idx}`}
-                                                    // type="text"
-                                                    value={c.reason}
-                                                    onChange={(e) => {
-                                                        const v = e.target.value;
-                                                        setCourses(prev => prev.map((pc, i) => i === idx ? ({
-                                                            ...pc,
-                                                            reason: v
-                                                        }) : pc));
-                                                    }}
-                                                    placeholder="Why you're taking the course..."
-                                                    title="Why you selected or need this course"
-
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        <hr className={styles.divider} />
-
                         {/* Quote */}
                         <div className={styles.gridTwo}>
-                            <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
+                            <div className={`${styles.field} ${styles.fullSpan}`}>
                                 <label className={styles.label} htmlFor="quote">Quote</label>
                                 <textarea
                                     className={styles.textarea}
@@ -693,7 +560,7 @@ export default function Page() {
                                     rows={2}
                                 />
                             </div>
-                            <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
+                            <div className={`${styles.field} ${styles.fullSpan}`}>
                                 <label className={styles.label} htmlFor="quoteAuthor">Quote Author</label>
                                 <input
                                     className={styles.input}
@@ -802,6 +669,153 @@ export default function Page() {
                                 />
                             </div>
                         </div>
+
+                        <hr className={styles.divider} />
+
+                        <div className={styles.courses}>
+                            <div className={styles.rowBetween}>
+                                <h4 style={{ fontSize: '1rem', fontWeight: 600, margin: 0 }}>Courses</h4>
+                                <div className={styles.toolbar}>
+                                    {showCourses && (
+                                        <button
+                                            className={styles.btn}
+                                            type="button"
+                                            onClick={() => setCourses(prev => [...prev, {
+                                                name: "",
+                                                reason: "",
+                                                dept: "",
+                                                number: ""
+                                            }])}
+                                            aria-label="Add course"
+                                        >
+                                            + Add Course
+                                        </button>
+                                    )}
+                                    <button
+                                        className={styles.btn}
+                                        type="button"
+                                        onClick={() => setShowCourses(prev => !prev)}
+                                        aria-label={showCourses ? 'Hide course editor' : 'Show course editor'}
+                                    >
+                                        {showCourses ? 'Hide Courses' : 'Show Courses'}
+                                    </button>
+                                </div>
+                            </div>
+
+                            {!showCourses && (
+                                <p className={styles.hint}>
+                                    {courses.length > 0 ? `${courses.length} course${courses.length === 1 ? '' : 's'}.` : 'No courses added yet.'}
+                                </p>
+                            )}
+
+                            {showCourses && (
+                                <>
+                                    {courses.length === 0 && (
+                                        <p className={styles.hint}>No courses added. Use "Add Course" to include one.</p>
+                                    )}
+
+                                    <div>
+                                        {courses.map((c, idx) => (
+                                            <div key={idx} className={styles.courseCard}>
+                                                <div className={styles.courseHeader}>
+                                                    <span className={styles.muted}>Course {idx + 1}</span>
+                                                    <button
+                                                        className={styles.btn}
+                                                        type="button"
+                                                        onClick={() => setCourses(prev => prev.filter((_, i) => i !== idx))}
+                                                        aria-label={`Remove course ${idx + 1}`}
+                                                    >
+                                                        Remove
+                                                    </button>
+                                                </div>
+                                                <div className={styles.courseGrid}>
+                                                    <div className={styles.field}>
+                                                        <label className={styles.label}
+                                                            htmlFor={`course-dept-${idx}`}>Department Prefix</label>
+                                                        <input
+                                                            className={styles.input}
+                                                            id={`course-dept-${idx}`}
+                                                            type="text"
+                                                            value={c.dept}
+                                                            onChange={(e) => {
+                                                                const v = e.target.value;
+                                                                setCourses(prev => prev.map((pc, i) => i === idx ? ({
+                                                                    ...pc,
+                                                                    dept: v
+                                                                }) : pc));
+                                                            }}
+                                                            placeholder="Prefix"
+                                                            title="Department prefix (e.g., ITIS, MATH)"
+
+                                                        />
+                                                    </div>
+                                                    <div className={styles.field}>
+                                                        <label className={styles.label}
+                                                            htmlFor={`course-number-${idx}`}>Course #</label>
+                                                        <input
+                                                            className={styles.input}
+                                                            id={`course-number-${idx}`}
+                                                            type="text"
+                                                            value={c.number}
+                                                            onChange={(e) => {
+                                                                const v = e.target.value;
+                                                                setCourses(prev => prev.map((pc, i) => i === idx ? ({
+                                                                    ...pc,
+                                                                    number: v
+                                                                }) : pc));
+                                                            }}
+                                                            placeholder="####"
+                                                            title="Numeric course identifier (e.g., 3135)"
+
+                                                        />
+                                                    </div>
+                                                    <div className={styles.field}>
+                                                        <label className={styles.label}
+                                                            htmlFor={`course-name-${idx}`}>Course Name</label>
+                                                        <input
+                                                            className={styles.input}
+                                                            id={`course-name-${idx}`}
+                                                            type="text"
+                                                            value={c.name}
+                                                            onChange={(e) => {
+                                                                const v = e.target.value;
+                                                                setCourses(prev => prev.map((pc, i) => i === idx ? ({
+                                                                    ...pc,
+                                                                    name: v
+                                                                }) : pc));
+                                                            }}
+                                                            placeholder="Name of the course..."
+                                                            title="Full course title (no section)"
+
+                                                        />
+                                                    </div>
+                                                    <div className={`${styles.field} ${styles.full}`}>
+                                                        <label className={styles.label}
+                                                            htmlFor={`course-reason-${idx}`}>Reason for taking</label>
+                                                        <textarea
+                                                            className={styles.input}
+                                                            id={`course-reason-${idx}`}
+                                                            value={c.reason}
+                                                            onChange={(e) => {
+                                                                const v = e.target.value;
+                                                                setCourses(prev => prev.map((pc, i) => i === idx ? ({
+                                                                    ...pc,
+                                                                    reason: v
+                                                                }) : pc));
+                                                            }}
+                                                            placeholder="Why you're taking the course..."
+                                                            title="Why you selected or need this course"
+
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </>
+                            )}
+                        </div>
+
                     </div>
                 </form>
             </section>
