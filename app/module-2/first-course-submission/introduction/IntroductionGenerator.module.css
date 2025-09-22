@@ -32,17 +32,17 @@
 }
 
 .card {
-  border: 1px solid rgba(0,0,0,0.08);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 12px;
   padding: 20px;
   background: var(--nextra-background, #fff);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 6px 18px rgba(0,0,0,0.06);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 6px 18px rgba(0, 0, 0, 0.06);
   transition: box-shadow .2s ease, border-color .2s ease;
 }
 
 .card:hover {
-  box-shadow: 0 2px 4px rgba(0,0,0,0.06), 0 10px 24px rgba(0,0,0,0.08);
-  border-color: rgba(0,0,0,0.12);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06), 0 10px 24px rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.12);
 }
 
 .section {
@@ -72,6 +72,28 @@
 @media (min-width: 720px) {
   .gridTwo {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.fullSpan {
+  grid-column: 1 / -1;
+}
+
+.inlineRowNames,
+.inlineRowMascot {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+@media (min-width: 720px) {
+  .inlineRowNames {
+    grid-template-columns: 2fr minmax(5rem, 1fr) 2fr 2fr;
+  }
+
+  .inlineRowMascot {
+    grid-template-columns: 2fr 1fr 2fr;
   }
 }
 
@@ -108,7 +130,7 @@
 .file {
   width: 100%;
   box-sizing: border-box;
-  border: 1px solid rgba(0,0,0,0.12);
+  border: 1px solid rgba(0, 0, 0, 0.12);
   background: var(--nextra-background, #fff);
   color: inherit;
   padding: 0.5rem 0.625rem;
@@ -125,20 +147,20 @@
 .file:focus {
   outline: none;
   border-color: var(--nextra-primary-400, #60a5fa);
-  box-shadow: 0 0 0 3px rgba(96,165,250,0.25);
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.25);
 }
 
 .hint {
   margin-top: 0.25rem;
   font-size: 0.85rem;
-  color: rgba(0,0,0,0.55);
+  color: rgba(0, 0, 0, 0.55);
   display: flex;
   justify-content: center;
 }
 
 .divider {
   border: none;
-  border-top: 1px solid rgba(0,0,0,0.08);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
   margin: 0.25rem 0 0.5rem;
 }
 
@@ -153,7 +175,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  border: 1px solid rgba(0,0,0,0.12);
+  border: 1px solid rgba(0, 0, 0, 0.12);
   background: var(--nextra-primary-50, #f9fafb);
   color: inherit;
   padding: 0.4rem 0.7rem;
@@ -176,6 +198,16 @@
   background: linear-gradient(180deg, #7cb3fb, #4f8ff7);
 }
 
+.btnDanger {
+  border-color: rgba(239, 68, 68, 0.6);
+  background: linear-gradient(180deg, #f87171, #ef4444);
+  color: #fff;
+}
+
+.btnDanger:hover {
+  background: linear-gradient(180deg, #fca5a5, #f87171);
+}
+
 .btnGhost {
   background: transparent;
 }
@@ -187,7 +219,7 @@
 }
 
 .courseCard {
-  border: 1px solid rgba(0,0,0,0.08);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 10px;
   padding: 12px;
   background: var(--nextra-background, #fff);
@@ -217,33 +249,35 @@
 }
 
 .preview ul {
-  list-style: none;
-  padding-left: 0;
+  list-style: disc;
+  list-style-position: inside;
   margin: 1rem 0;
+  padding-left: 0;
   display: grid;
   gap: 1rem;
 }
 
-.preview ul > li {
+.preview ul>li {
   padding: 0.5rem 0.75rem;
-  border: 1px solid rgba(0,0,0,0.08);
-  border-radius: 8px;
+  /* border: 1px solid rgba(0,0,0,0.08); */
+  /* border-radius: 8px; */
   background: var(--nextra-background, #fff);
 }
 
-.preview ul > li strong {
+.preview ul>li strong {
   color: var(--nextra-primary-700, #1f2937);
 }
 
-.preview ul > li > ul {
+.preview ul>li>ol {
   margin-top: 0.5rem;
-  list-style: none;
-  padding-left: 0;
+  list-style: decimal;
+  list-style-position: inside;
+  padding-left: 1.25rem;
   display: grid;
   gap: 0.5rem;
 }
 
-.preview ul > li > ul > li {
+.preview ul>li>ol>li {
   margin: 0.25rem 0;
 }
 
@@ -284,7 +318,7 @@
 
 .linkSep {
   margin: 0 0.35rem;
-  color: rgba(0,0,0,0.55);
+  color: rgba(0, 0, 0, 0.55);
 }
 
 .quoteText {
@@ -295,18 +329,19 @@
   display: block;
   text-align: center;
   margin-top: .25rem;
-  color: rgba(0,0,0,0.7);
+  margin-bottom: .5rem;
+  color: rgba(0, 0, 0, 0.7);
 }
 
 .preview img {
   width: 100%;
   height: auto;
   border-radius: 10px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.12);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .muted {
-  color: rgba(0,0,0,0.65);
+  color: rgba(0, 0, 0, 0.65);
 }
 
 .toolbar {
@@ -314,6 +349,8 @@
   gap: .5rem;
   align-items: center;
   flex-wrap: nowrap;
+  width: 100%;
+  margin-bottom: 2rem;
 }
 
 .badge {
@@ -322,7 +359,7 @@
   gap: .4rem;
   padding: .25rem .6rem;
   border-radius: 9999px;
-  border: 1px solid rgba(0,0,0,0.12);
+  border: 1px solid rgba(0, 0, 0, 0.12);
   background: var(--nextra-primary-50, #f9fafb);
   color: var(--nextra-primary-700, #1f2937);
   font-size: .85rem;
@@ -351,5 +388,5 @@
 
 .subtitle {
   margin: 0;
-  color: rgba(0,0,0,0.65);
+  color: rgba(0, 0, 0, 0.65);
 }

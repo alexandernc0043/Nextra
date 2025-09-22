@@ -2,8 +2,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import styles from "../IntroductionGenerator.module.css";
-
-type Course = { dept: string; number: string; name: string; reason: string };
+import { Course, IntroLinks } from "../types";
 type IntroData = {
   firstName: string;
   preferredName: string;
@@ -21,15 +20,9 @@ type IntroData = {
   courses: Course[];
   quote?: string;
   quoteAuthor?: string;
-  links?: {
-    cltWeb?: string;
-    github?: string;
-    githubIo?: string;
-    courseIo?: string;
-    freeCodeCamp?: string;
-    codecademy?: string;
-    linkedIn?: string;
-  };
+  funnyThing?: string;
+  interestingThing?: string;
+  links?: Partial<IntroLinks>;
 };
 
 export default function IntroPreviewPage() {
@@ -55,7 +48,7 @@ export default function IntroPreviewPage() {
             setNotFound(false)
             return
           }
-        } catch {}
+        } catch { }
 
         const src = search?.get("src");
         const dataParam = search?.get("data");
@@ -86,7 +79,7 @@ export default function IntroPreviewPage() {
               setData(j);
               setNotFound(false);
               return;
-            } catch {}
+            } catch { }
           }
         }
         const raw = localStorage.getItem(`intro:${slug}`);
@@ -139,6 +132,8 @@ export default function IntroPreviewPage() {
     courses,
     quote,
     quoteAuthor,
+    funnyThing,
+    interestingThing,
     links,
   } = data;
 
@@ -158,47 +153,47 @@ export default function IntroPreviewPage() {
   return (
     <div className={styles.page}>
       <div className={styles.max}>
-      <div className={styles.preview}>
-        <div className={styles.rowBetween}>
-        <div className={styles.toolbar}>
-          <button className={`${styles.btn} ${styles.btnGhost}`} onClick={() => router.push("/module-2/first-course-submission/introduction/browse")}>Back to browse</button>
-          <button
-            className={styles.btn}
-            onClick={() => {
-              try {
-                const filename = buildFilename(data, slug);
-                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-                URL.revokeObjectURL(url);
-              } catch {}
-            }}
-          >
-            Export JSON
-          </button>
-        </div>
-        <span className={styles.badge}>Preview</span>
-      </div>
-      <div className={styles.card}>
-        <p className={styles.hint} suppressHydrationWarning>
-          I understand that what I put here is publicly available on the web and I won’t put anything here I don’t want the public to see {divider} {initials} {divider} {today}
-        </p>
-
-        <ul>
-          <li>
+        <div className={styles.preview}>
+          <div className={styles.rowBetween}>
+            <div className={styles.toolbar}>
+              <button
+                className={`${styles.btn} ${styles.btnGhost}`}
+                onClick={() => router.push("/module-2/first-course-submission/introduction/browse")}
+              >
+                Back to browse
+              </button>
+              <button
+                className={styles.btn}
+                onClick={() => {
+                  try {
+                    const filename = buildFilename(data, slug);
+                    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    URL.revokeObjectURL(url);
+                  } catch { }
+                }}
+              >
+                Export JSON
+              </button>
+            </div>
+          </div>
+          <div className={styles.card}>
+            <p className={styles.hint} suppressHydrationWarning>
+              I understand that what I put here is publicly available on the web and I won’t put anything here I don’t want the public to see {divider} {initials} {divider} {today}
+            </p>
             <div className={styles.nameLine}>
               {firstName}{" "}
               {middleInitial ? `${middleInitial}. ` : ""}
               {preferredName ? `“${preferredName}” ` : ""}
               {lastName} {divider} {mascot}
             </div>
-          </li>
-          <li>
+
             <figure>
               <img src={image || "/headshot.jpeg"} alt={imageCaption} width={500} height={500} />
               {imageCaption ? (
@@ -207,67 +202,71 @@ export default function IntroPreviewPage() {
                 </figcaption>
               ) : null}
             </figure>
-          </li>
-          {data.personalStatement ? (
-            <li>
+            {data.personalStatement ? (
               <p className={styles.quoteText}><em>“{data.personalStatement}”</em></p>
-            </li>
-          ) : null}
-          <li>
-            <strong>Personal Background: </strong>
-            {personalBackground || "None."}
-          </li>
-          <li>
-            <strong>Professional Background: </strong>
-            {professionalBackground || "None."}
-          </li>
-          <li>
-            <strong>Academic Background: </strong>
-            {academicBackground || "None."}
-          </li>
-          <li>
-            <strong>Primary Computer: </strong>
-            {primaryComputer || "None."}
-          </li>
-          <li>
-            <strong>Courses:</strong>
-            <ul style={{ marginTop: "0.25rem" }}>
-              {courses?.length
-                ? courses.map(({ dept, number, name, reason }, index) => (
-                    <li key={index}>
-                      <strong>
-                        {dept} {number} — {name}
-                      </strong>
-                      : {reason}
-                    </li>
-                  ))
-                : <li>No courses.</li>}
+            ) : null}
+            <ul>
+              <li>
+                <strong>Personal Background: </strong>
+                {personalBackground || "None."}
+              </li>
+              <li>
+                <strong>Professional Background: </strong>
+                {professionalBackground || "None."}
+              </li>
+              <li>
+                <strong>Academic Background: </strong>
+                {academicBackground || "None."}
+              </li>
+              <li>
+                <strong>Primary Computer: </strong>
+                {primaryComputer || "None."}
+              </li>
+              <li>
+                <strong>Funny thing about me: </strong>
+                {funnyThing || "None yet."}
+              </li>
+              <li>
+                <strong>Interesting thing about me: </strong>
+                {interestingThing || "None yet."}
+              </li>
+              <li>
+                <strong>Courses I'm Taking and Why:</strong>
+                <ol style={{ marginTop: "0.25rem" }}>
+                  {courses?.length
+                    ? courses.map(({ dept, number, name, reason }, index) => (
+                      <li key={index}>
+                        <strong>
+                          {dept} {number} — {name}
+                        </strong>
+                        : {reason}
+                      </li>
+                    ))
+                    : <li>No courses.</li>}
+                </ol>
+              </li>
             </ul>
-          </li>
-          {(quote || quoteAuthor) && (
-            <li>
-              {quote ? <div className={styles.quoteText}><em>“{quote}”</em></div> : null}
-              {quoteAuthor ? <span className={styles.quoteAuthor}>— {quoteAuthor}</span> : null}
-            </li>
-          )}
-          {linksArr.length > 0 && (
-            <li>
-              <div className={styles.linkRow}>
-                {linksArr.map((l, idx) => (
-                  <span key={`${l.label}-${idx}`} className={styles.linkItem}>
-                    <a href={l.href} target="_blank" rel="noopener noreferrer">{l.label}</a>
-                    {idx < linksArr.length - 1 ? <span className={styles.linkSep}>{` ${divider} `}</span> : null}
-                  </span>
-                ))}
-              </div>
-            </li>
-          )}
-        </ul>
-      </div>
-      </div>
+            {(quote || quoteAuthor) && (
+                <div>
+                  {quote ? <div className={styles.quoteText}><em>“{quote}”</em></div> : null}
+                  {quoteAuthor ? <span className={styles.quoteAuthor}>— {quoteAuthor}</span> : null}
+                </div>
+              )}
+              {linksArr.length > 0 && (
+                  <div className={styles.linkRow}>
+                    {linksArr.map((l, idx) => (
+                      <span key={`${l.label}-${idx}`} className={styles.linkItem}>
+                        <a href={l.href} target="_blank" rel="noopener noreferrer">{l.label}</a>
+                        {idx < linksArr.length - 1 ? <span className={styles.linkSep}>{` ${divider} `}</span> : null}
+                      </span>
+                    ))}
+                  </div>
+              )}
+          </div>
+        </div>
       </div>
     </div>
-    );
+  );
 }
 
 function buildFilename(data: IntroData | null, slug: string) {

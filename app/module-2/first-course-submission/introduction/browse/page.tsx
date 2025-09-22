@@ -1,4 +1,5 @@
 "use client";
+import {SignedIn, useAuth} from '@clerk/nextjs'
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import styles from "../IntroductionGenerator.module.css";
@@ -11,6 +12,7 @@ type Intro = {
   lastName?: string;
   updatedAt?: string | Date;
   createdAt?: string | Date;
+  createdBy?: string;
 };
 
 export default function BrowseIntrosPage() {
@@ -29,6 +31,9 @@ function BrowseIntrosContent() {
   const [items, setItems] = useState<Intro[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [canDelete, setCanDelete] = useState(false);
+  const [deletingSlug, setDeletingSlug] = useState<string | null>(null);
+  const { userId } = useAuth();
 
   const debouncedQ = useDebounce(q, 250);
 
@@ -41,10 +46,12 @@ function BrowseIntrosContent() {
         if (debouncedQ) u.searchParams.set("q", debouncedQ);
         const r = await fetch(u.toString(), { cache: "no-store" });
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        const j = (await r.json()) as { items: Intro[] };
+        const j = (await r.json()) as { items: Intro[]; canDelete?: boolean };
         setItems(j.items || []);
+        setCanDelete(Boolean(j.canDelete));
       } catch (e: any) {
         setError("Unable to load introductions. Make sure MongoDB is configured.");
+        setCanDelete(false);
       } finally {
         setLoading(false);
       }
@@ -55,6 +62,34 @@ function BrowseIntrosContent() {
     window.history.replaceState({}, "", url.toString());
     fetchList();
   }, [debouncedQ]);
+
+  const deleteIntro = async (slug: string) => {
+    const confirmDelete = window.confirm(`Delete introduction “${slug}”? This action cannot be undone.`);
+    if (!confirmDelete) return;
+    try {
+      setDeletingSlug(slug);
+      const r = await fetch(`/api/intros/${encodeURIComponent(slug)}`, {
+        method: 'DELETE',
+      });
+      if (!r.ok) {
+        if (r.status === 401) {
+          alert('Please sign in to delete introductions.');
+          return;
+        }
+        if (r.status === 403) {
+          alert('You can only delete introductions you created or moderate.');
+          return;
+        }
+        throw new Error('Delete failed');
+      }
+      setItems((prev) => prev.filter((item) => item.slug !== slug));
+    } catch (err) {
+      console.error('Delete intro failed', err);
+      alert('Unable to delete the introduction. Please try again.');
+    } finally {
+      setDeletingSlug(null);
+    }
+  };
 
   return (
     <div className={styles.page}>
@@ -110,6 +145,17 @@ function BrowseIntrosContent() {
                       >
                         Copy link
                       </button>
+                      {(canDelete || (userId && it.createdBy === userId)) ? (
+                        <SignedIn>
+                          <button
+                            className={`${styles.btn} ${styles.btnDanger}`}
+                            onClick={() => deleteIntro(it.slug)}
+                            disabled={deletingSlug === it.slug}
+                          >
+                            {deletingSlug === it.slug ? 'Deleting…' : 'Delete'}
+                          </button>
+                        </SignedIn>
+                      ) : null}
                     </div>
                   </div>
                 </li>

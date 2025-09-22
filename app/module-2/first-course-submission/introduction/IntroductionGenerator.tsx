@@ -1,24 +1,37 @@
 "use client";
+import { SignInButton, SignedIn, SignedOut, useAuth, Protect } from '@clerk/nextjs'
 import { useState, useEffect, useRef } from 'react';
 import styles from './IntroductionGenerator.module.css'
-type Course = { dept: string; number: string; name: string; reason: string }
+
+import { cloneTemplateCourses, TEMPLATE_INTRO } from './formTemplate'
+import { validateIntroValues } from './validation'
+import { Course, IntroFormValues, IntroLinks } from './types'
+import { NameFields } from './components/NameFields'
+import { MascotAndImageFields } from './components/MascotAndImageFields'
+import { BioFields } from './components/BioFields'
+import { FactsFields } from './components/FactsFields'
+import { QuoteFields } from './components/QuoteFields'
+import { LinksFields } from './components/LinksFields'
+import { CourseEditor } from './components/CourseEditor'
 
 export default function Page() {
-    const [firstName, setFirstName] = useState("Alexander");
-    const [preferredName, setPreferredName] = useState("Alex");
-    const [middleInitial, setMiddleInitial] = useState("J");
-    const [lastName, setLastName] = useState("Prechtel");
-    const [slug, setSlug] = useState("alexander-prechtel");
+    const { isSignedIn } = useAuth()
+    const [firstName, setFirstName] = useState<string>(TEMPLATE_INTRO.firstName);
+    const [preferredName, setPreferredName] = useState<string>(TEMPLATE_INTRO.preferredName);
+    const [middleInitial, setMiddleInitial] = useState<string>(TEMPLATE_INTRO.middleInitial);
+    const [lastName, setLastName] = useState<string>(TEMPLATE_INTRO.lastName);
+    const [slug, setSlug] = useState<string>(TEMPLATE_INTRO.slug);
     const [customSlug, setCustomSlug] = useState(false);
-    const [divider, setDivider] = useState("~");
-    const [mascot, setMascot] = useState("Advanced Pegasus");
-    const [image, setImage] = useState("/headshot.jpeg")
+    const [divider, setDivider] = useState<string>(TEMPLATE_INTRO.divider);
+    const [mascot, setMascot] = useState<string>(TEMPLATE_INTRO.mascot);
+    const [image, setImage] = useState<string>(TEMPLATE_INTRO.image)
     const [imageDataUrl, setImageDataUrl] = useState<string>("");
     const [imageFilename, setImageFilename] = useState<string>(() => {
-        const parts = "/headshot.jpeg".split("/")
+        const parts = TEMPLATE_INTRO.image.split("/")
         return parts[parts.length - 1] || "image"
     })
     const imageObjectUrlRef = useRef<string | null>(null)
+    const formRef = useRef<HTMLFormElement | null>(null)
     const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (!file) return
@@ -48,72 +61,41 @@ export default function Page() {
     useEffect(() => {
         setToday(new Date().toLocaleDateString())
     }, [])
-    const [imageCaption, setImageCaption] = useState("At the beach on the eastern coast of Florida (2024)")
+    const [imageCaption, setImageCaption] = useState<string>(TEMPLATE_INTRO.imageCaption)
     const [today, setToday] = useState("")
-    const [personalBackground, setPersonalBackground] = useState("Grew up north of Charlotte, and have always had a love of computers.")
-    const [personalStatement, setPersonalStatement] = useState("I’m a junior at UNC Charlotte studying Computer Science with a focus in Cybersecurity. I’m excited to collaborate and build secure, user‑friendly systems this semester.")
-    const [professionalBackground, setProfessionalBackground] = useState("This is my first semester as an Instructional Assistant/Teachers Assistant, but before that I was a Peer Tutor for CCI.")
-    const [academicBackground, setAcademicBackground] = useState("I’m currently a Junior at UNC Charlotte studying computer science with a focus in Cybersecurity. Before that I attended Highschool in Mooresville, North Carolina.")
-    const [primaryComputer, setPrimaryComputer] = useState("The laptop I use for university is a Macbook Pro M2 14 inch. I also use a custom built Windows 11 computer.")
-    const [courses, setCourses] = useState([
-        {
-            dept: "ITIS",
-            number: "4250",
-            name: "Computer Forensics",
-            reason: "Required course for my concentration but the course’s subject also interests me."
-        },
-        {
-            dept: "ITIS",
-            number: "3246",
-            name: "IT Infrastructure and Security",
-            reason: "Another required course for my concentration but this is another class I am interested in."
-        },
-        {
-            dept: "THEA",
-            number: "1512",
-            name: "Theatre in the United States",
-            reason: "I needed to take one more theme course and this one was recommended to me by a friend who took it previously."
-        },
-        {
-            dept: "MATH",
-            number: "2164",
-            name: "Matrices & Linear Algebra",
-            reason: "Required course for the Computer Science degree."
-        },
-        {
-            dept: "BIOL",
-            number: "1110",
-            name: "Principles of Biology I",
-            reason: "I needed to take another science course and this was recommended to me by a friend."
-        },
-        {
-            dept: "BIOL",
-            number: "1110L",
-            name: "Principles of Biology I Lab",
-            reason: "I needed to take a science course with its lab."
-        },
-    ])
+    const [personalBackground, setPersonalBackground] = useState<string>(TEMPLATE_INTRO.personalBackground)
+    const [personalStatement, setPersonalStatement] = useState<string>(TEMPLATE_INTRO.personalStatement)
+    const [professionalBackground, setProfessionalBackground] = useState<string>(TEMPLATE_INTRO.professionalBackground)
+    const [academicBackground, setAcademicBackground] = useState<string>(TEMPLATE_INTRO.academicBackground)
+    const [primaryComputer, setPrimaryComputer] = useState<string>(TEMPLATE_INTRO.primaryComputer)
+    const [courses, setCourses] = useState<Course[]>(() => cloneTemplateCourses())
+    const [showCourses, setShowCourses] = useState(true)
     // New: quote and links
-    const [quote, setQuote] = useState("Do what is right, not what is easy nor what is popular.")
-    const [quoteAuthor, setQuoteAuthor] = useState("Roy T. Bennett")
-    const [linkCltWeb, setLinkCltWeb] = useState("https://webpages.charlotte.edu/aprechte")
-    const [linkGithub, setLinkGithub] = useState("https://github.com/alexandernc0043")
-    const [linkGithubIo, setLinkGithubIo] = useState("https://alexandernc0043.github.io/")
-    const [linkCourseIo, setLinkCourseIo] = useState("https://alexandernc0043.github.io/itis3135/")
-    const [linkFreeCodeCamp, setLinkFreeCodeCamp] = useState("https://www.freecodecamp.org/aprechte")
-    const [linkCodecademy, setLinkCodecademy] = useState("https://www.codecademy.com/profiles/aprechte")
-    const [linkLinkedIn, setLinkLinkedIn] = useState("https://www.linkedin.com/in/alexander-prechtel-b4a0a9283/")
-    
+    const [quote, setQuote] = useState<string>(TEMPLATE_INTRO.quote)
+    const [quoteAuthor, setQuoteAuthor] = useState<string>(TEMPLATE_INTRO.quoteAuthor)
+    const [funnyThing, setFunnyThing] = useState<string>(TEMPLATE_INTRO.funnyThing)
+    const [interestingThing, setInterestingThing] = useState<string>(TEMPLATE_INTRO.interestingThing)
+    const [linkCltWeb, setLinkCltWeb] = useState<string>(TEMPLATE_INTRO.links.cltWeb)
+    const [linkGithub, setLinkGithub] = useState<string>(TEMPLATE_INTRO.links.github)
+    const [linkGithubIo, setLinkGithubIo] = useState<string>(TEMPLATE_INTRO.links.githubIo)
+    const [linkCourseIo, setLinkCourseIo] = useState<string>(TEMPLATE_INTRO.links.courseIo)
+    const [linkFreeCodeCamp, setLinkFreeCodeCamp] = useState<string>(TEMPLATE_INTRO.links.freeCodeCamp)
+    const [linkCodecademy, setLinkCodecademy] = useState<string>(TEMPLATE_INTRO.links.codecademy)
+    const [linkLinkedIn, setLinkLinkedIn] = useState<string>(TEMPLATE_INTRO.links.linkedIn)
+
 
     const slugify = (v: string) => v
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '') || 'intro';
 
-    const [slugAvailability, setSlugAvailability] = useState<'unknown'|'checking'|'available'|'taken'>('unknown')
+    const [slugAvailability, setSlugAvailability] = useState<'unknown' | 'checking' | 'available' | 'taken'>('unknown')
     // Check if slug exists in DB (if configured). Debounced.
     useEffect(() => {
         const s = slugify(slug)
+        if (s !== slug) {
+            setSlug(s)
+        }
         setSlugAvailability('checking')
         const ctrl = new AbortController()
         const t = setTimeout(async () => {
@@ -136,18 +118,20 @@ export default function Page() {
         }
     }, [firstName, lastName, customSlug])
 
-    
+
 
     // Persist editor state to localStorage so users can preview and keep editing later
-    const collectData = () => ({
+    const collectData = (): IntroFormValues => ({
+        slug,
         firstName,
         preferredName,
         middleInitial,
         lastName,
         divider,
         mascot,
-        image: imageDataUrl || image || "/headshot.jpeg",
+        image: imageDataUrl || image || TEMPLATE_INTRO.image,
         imageCaption,
+        personalStatement,
         personalBackground,
         professionalBackground,
         academicBackground,
@@ -155,6 +139,8 @@ export default function Page() {
         courses,
         quote,
         quoteAuthor,
+        funnyThing,
+        interestingThing,
         links: {
             cltWeb: linkCltWeb,
             github: linkGithub,
@@ -163,7 +149,7 @@ export default function Page() {
             freeCodeCamp: linkFreeCodeCamp,
             codecademy: linkCodecademy,
             linkedIn: linkLinkedIn,
-        }
+        } as IntroLinks,
     })
 
     const applyDataToForm = (json: any) => {
@@ -172,29 +158,43 @@ export default function Page() {
             setPreferredName(json.preferredName || '')
             setMiddleInitial(json.middleInitial || '')
             setLastName(json.lastName || '')
-            setDivider(json.divider || '~')
-            setMascot(json.mascot || '')
+            if (typeof json.slug === 'string' && json.slug.trim()) {
+                setSlug(json.slug)
+                setCustomSlug(true)
+            }
+            setDivider(json.divider || TEMPLATE_INTRO.divider)
+            setMascot(json.mascot || TEMPLATE_INTRO.mascot)
             if (json.image) {
                 setImage(json.image)
                 setImageDataUrl(typeof json.image === 'string' && json.image.startsWith('data:') ? json.image : '')
+            } else {
+                setImage(TEMPLATE_INTRO.image)
+                setImageDataUrl('')
             }
-            setImageCaption(json.imageCaption || '')
-            setPersonalBackground(json.personalBackground || '')
-            setPersonalStatement(json.personalStatement || '')
-            setProfessionalBackground(json.professionalBackground || '')
-            setAcademicBackground(json.academicBackground || '')
-            setPrimaryComputer(json.primaryComputer || '')
-            setCourses(Array.isArray(json.courses) ? json.courses : [])
-            setQuote(json.quote || '')
-            setQuoteAuthor(json.quoteAuthor || '')
+            setImageCaption(json.imageCaption || TEMPLATE_INTRO.imageCaption)
+            setPersonalBackground(json.personalBackground || TEMPLATE_INTRO.personalBackground)
+            setPersonalStatement(json.personalStatement || TEMPLATE_INTRO.personalStatement)
+            setProfessionalBackground(json.professionalBackground || TEMPLATE_INTRO.professionalBackground)
+            setAcademicBackground(json.academicBackground || TEMPLATE_INTRO.academicBackground)
+            setPrimaryComputer(json.primaryComputer || TEMPLATE_INTRO.primaryComputer)
+            setCourses(Array.isArray(json.courses) ? json.courses.map((course: any) => ({
+                dept: typeof course?.dept === 'string' ? course.dept : '',
+                number: typeof course?.number === 'string' ? course.number : '',
+                name: typeof course?.name === 'string' ? course.name : '',
+                reason: typeof course?.reason === 'string' ? course.reason : '',
+            })) : cloneTemplateCourses())
+            setQuote(json.quote || TEMPLATE_INTRO.quote)
+            setQuoteAuthor(json.quoteAuthor || TEMPLATE_INTRO.quoteAuthor)
+            setFunnyThing(json.funnyThing || TEMPLATE_INTRO.funnyThing)
+            setInterestingThing(json.interestingThing || TEMPLATE_INTRO.interestingThing)
             const links = json.links || {}
-            setLinkCltWeb(links.cltWeb || '')
-            setLinkGithub(links.github || '')
-            setLinkGithubIo(links.githubIo || '')
-            setLinkCourseIo(links.courseIo || '')
-            setLinkFreeCodeCamp(links.freeCodeCamp || '')
-            setLinkCodecademy(links.codecademy || '')
-            setLinkLinkedIn(links.linkedIn || '')
+            setLinkCltWeb(links.cltWeb || TEMPLATE_INTRO.links.cltWeb)
+            setLinkGithub(links.github || TEMPLATE_INTRO.links.github)
+            setLinkGithubIo(links.githubIo || TEMPLATE_INTRO.links.githubIo)
+            setLinkCourseIo(links.courseIo || TEMPLATE_INTRO.links.courseIo)
+            setLinkFreeCodeCamp(links.freeCodeCamp || TEMPLATE_INTRO.links.freeCodeCamp)
+            setLinkCodecademy(links.codecademy || TEMPLATE_INTRO.links.codecademy)
+            setLinkLinkedIn(links.linkedIn || TEMPLATE_INTRO.links.linkedIn)
         } catch { /* ignore */ }
     }
 
@@ -222,22 +222,29 @@ export default function Page() {
         return () => clearTimeout(t)
         // Include all fields that contribute to the data shape
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [slug, firstName, preferredName, middleInitial, lastName, divider, mascot, image, imageDataUrl, imageCaption, personalBackground, personalStatement, professionalBackground, academicBackground, primaryComputer, courses, quote, quoteAuthor, linkCltWeb, linkGithub, linkGithubIo, linkCourseIo, linkFreeCodeCamp, linkCodecademy, linkLinkedIn])
+    }, [slug, firstName, preferredName, middleInitial, lastName, divider, mascot, image, imageDataUrl, imageCaption, personalBackground, personalStatement, professionalBackground, academicBackground, primaryComputer, courses, quote, quoteAuthor, funnyThing, interestingThing, linkCltWeb, linkGithub, linkGithubIo, linkCourseIo, linkFreeCodeCamp, linkCodecademy, linkLinkedIn])
+
+    // const validateForm = () => validateIntroValues(collectData())
 
     const publish = async () => {
-        const s = slugify(slug)
-        if (!firstName && !preferredName) {
-            alert('Please enter at least a first or preferred name.')
+        if (!isSignedIn) {
+            alert('Please sign in to publish your introduction.')
             return
         }
-        if (!lastName) {
-            alert('Please enter a last name.')
+        if (formRef.current && !formRef.current.reportValidity()) {
             return
         }
         if (slugAvailability === 'taken') {
-            const proceed = confirm('This slug already exists and will be overwritten. Continue?')
-            if (!proceed) return
+            alert('Slug is already taken, try another slug.')
+            return
         }
+        // const validationErrors = validateForm()
+        // if (validationErrors.length > 0) {
+        //     alert(`Please update your introduction before publishing:\n- ${validationErrors.join('\n- ')}`)
+        //     return
+        // }
+
+        const s = slugify(slug)
         const dataToSave = {
             firstName,
             preferredName,
@@ -245,8 +252,9 @@ export default function Page() {
             lastName,
             divider,
             mascot,
-            image: imageDataUrl || image || "/headshot.jpeg",
+            image: imageDataUrl || image || TEMPLATE_INTRO.image,
             imageCaption,
+            personalStatement,
             personalBackground,
             professionalBackground,
             academicBackground,
@@ -254,6 +262,8 @@ export default function Page() {
             courses,
             quote,
             quoteAuthor,
+            funnyThing,
+            interestingThing,
             links: {
                 cltWeb: linkCltWeb,
                 github: linkGithub,
@@ -270,7 +280,17 @@ export default function Page() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dataToSave)
             })
-            if (!r.ok) throw new Error('Publish failed')
+            if (!r.ok) {
+                if (r.status === 401) {
+                    alert('Please sign in to publish your introduction.')
+                    return
+                }
+                if (r.status === 403) {
+                    alert('You do not have permission to publish this introduction.')
+                    return
+                }
+                throw new Error('Publish failed')
+            }
             const url = `${window.location.origin}/module-2/first-course-submission/introduction/${s}`
             try {
                 await navigator.clipboard.writeText(url)
@@ -284,497 +304,156 @@ export default function Page() {
     }
 
     return <>
-        <div className={styles.page}>
-            <div className={`${styles.max} ${styles.full}`}>
-            <div className={styles.container}>
-            <section className={styles.section}>
-                <div className={styles.header}>
-                    <h2 className={styles.title}>Introduction Generator</h2>
-                    <p className={styles.subtitle}>Fill out your details, then preview a polished introduction page.</p>
-                </div>
-                <h2>Form</h2>
-                <form onSubmit={(e) => e.preventDefault()} className={styles.form}>
-                    <div className={styles.card}>
-                        <div className={styles.rowBetween}>
-                            <div className={styles.toolbar}>
-                                
-                                <span className={`${styles.badge} ${slugAvailability === 'available' ? styles.badgeSuccess : slugAvailability === 'taken' ? styles.badgeWarn : ''}`}>
-                                    {slugAvailability === 'checking' ? 'Checking…' : slugAvailability === 'available' ? 'Available' : slugAvailability === 'taken' ? 'Taken' : 'Unknown'}
-                                </span>
-                                <input
-                                    className={styles.input}
-                                    style={{ flex: '1 1 260px', minWidth: 180 }}
-                                    type="text"
-                                    value={slug}
-                                    onChange={(e) => {
-                                        setSlug(e.target.value);
-                                        setCustomSlug(true);
-                                    }}
-                                    placeholder="my-intro-slug"
-                                    title="Slug for the preview page"
-                                />
-                                
-                                <button
-                                    className={`${styles.btn} ${styles.btnPrimary}`}
-                                    type="button"
-                                    onClick={publish}
-                                    aria-label="Publish introduction"
-                                    title="Save to the database and copy a shareable link"
-                                >
-                                    Publish
-                                </button>
-                                
-                                
+        <SignedOut>
+            <h3>You must be signed in to use this page.</h3>
+        </SignedOut>
+        <Protect>
+            <div className={styles.page}>
+                <div className={`${styles.max} ${styles.full}`}>
+                    <div className={styles.container}>
+                        <section className={styles.section}>
+                            <div className={styles.header}>
+                                <h2 className={styles.title}>Introduction Generator</h2>
+                                <p className={styles.subtitle}>Fill out your details, then preview a polished introduction page.</p>
                             </div>
-                        </div>
+                            <h2>Form</h2>
+                            <form ref={formRef} onSubmit={(e) => e.preventDefault()} className={styles.form}>
+                                <div className={styles.card}>
+                                    <div className={styles.rowBetween}>
+                                        <div className={styles.toolbar}>
+                                            <span className={`${styles.badge} ${slugAvailability === 'available' ? styles.badgeSuccess : slugAvailability === 'taken' ? styles.badgeWarn : ''}`}>
+                                                {slugAvailability === 'checking' ? 'Checking…' : slugAvailability === 'available' ? 'Available' : slugAvailability === 'taken' ? 'Taken' : 'Unknown'}
+                                            </span>
+                                            <input
+                                                className={styles.input}
+                                                type="text"
+                                                value={slug}
+                                                onChange={(e) => {
+                                                    setSlug(e.target.value);
+                                                    setCustomSlug(true);
+                                                }}
+                                                placeholder="my-intro-slug"
+                                                title="Slug for the preview page"
+                                                required
+                                            />
 
-                        <div className={styles.gridTwo}>
-                            {/* <div className={styles.nameGrid}> */}
-                            <div className={styles.field}>
-                                <label className={styles.label} htmlFor="name">First Name</label>
-                                <input
-                                    className={styles.input}
-                                    id="name"
-                                    type="text"
-                                    value={firstName}
-                                    onChange={(e) => setFirstName(e.target.value)}
-                                    placeholder="Your name"
-                                    title="Enter your legal first name"
-                                />
-                            </div>
-                            <div className={`${styles.field}`}>
-                                <label className={styles.label} htmlFor="middle">Middle Initial</label>
-                                <input
-                                    className={styles.input}
-                                    id="middle"
-                                    type="text"
-                                    value={middleInitial}
-                                    onChange={(e) => setMiddleInitial(e.target.value)}
-                                    placeholder="Your middle initial."
-                                    title="Provide your middle initial, if applicable"
-                                />
-                            </div>
-                            <div className={styles.field}>
-                                <label className={styles.label} htmlFor="preferred">Preferred Name</label>
-                                <input
-                                    className={styles.input}
-                                    id="preferred"
-                                    type="text"
-                                    value={preferredName}
-                                    onChange={(e) => setPreferredName(e.target.value)}
-                                    placeholder="Your preferred name."
-                                    title="What you prefer to be called"
-                                />
-                            </div>
-                            <div className={styles.field}>
-                                <label className={styles.label} htmlFor="last">Last Name</label>
-                                <input
-                                    className={styles.input}
-                                    id="last"
-                                    type="text"
-                                    value={lastName}
-                                    onChange={(e) => setLastName(e.target.value)}
-                                    placeholder="Your last name."
-                                    title="Enter your family/last name"
-                                />
-                            </div>
+                                            <SignedIn>
+                                                <button
+                                                    className={`${styles.btn} ${styles.btnPrimary}`}
+                                                    type="button"
+                                                    onClick={publish}
+                                                    aria-label="Publish introduction"
+                                                    title="Save to the database and copy a shareable link"
+                                                >
+                                                    Publish
+                                                </button>
+                                            </SignedIn>
+                                            <SignedOut>
+                                                <SignInButton mode="modal">
+                                                    <button
+                                                        className={`${styles.btn} ${styles.btnPrimary}`}
+                                                        type="button"
+                                                        aria-label="Sign in to publish introduction"
+                                                        title="Sign in to publish introduction"
+                                                    >
+                                                        Sign in to publish
+                                                    </button>
+                                                </SignInButton>
+                                            </SignedOut>
 
 
-                            <div className={styles.field}>
-                                <label className={styles.label} htmlFor="mascot">Mascot</label>
-                                <input
-                                    className={styles.input}
-                                    id="mascot"
-                                    type="text"
-                                    value={mascot}
-                                    onChange={(e) => setMascot(e.target.value)}
-                                    placeholder="Your mascot."
-                                    title="Your chosen mascot for the course"
-
-                                />
-                            </div>
-                            <div className={styles.field}>
-                                <label className={styles.label}
-                                    htmlFor="divider">Divider</label>
-                                <input
-                                    className={styles.input}
-                                    id="divider"
-                                    type="text"
-                                    value={divider}
-                                    onChange={(e) => setDivider(e.target.value)}
-                                    placeholder="Divider"
-                                    title="Symbol used to separate sections (e.g., ~ or |)"
-
-                                />
-                            </div>
-
-
-                            <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
-                                <label className={styles.label} htmlFor="imageFile">Upload
-                                    Image</label>
-                                <input
-                                    className={styles.file}
-                                    id="imageFile"
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleImageFileChange}
-
-                                />
-                                <p className={styles.hint}>PNG, JPG, or GIF. Stays local in your
-                                    browser.</p>
-                            </div>
-
-                            <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
-                                <label className={styles.label} htmlFor="imageCaption">Image
-                                    Caption</label>
-                                <input
-                                    className={styles.input}
-                                    id="imageCaption"
-                                    type="text"
-                                    value={imageCaption}
-                                    onChange={(e) => setImageCaption(e.target.value)}
-                                    placeholder="Short description of the image"
-                                    title="Describe the image for accessibility"
-
-                                />
-                            </div>
-                            <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
-                                <label className={styles.label} htmlFor="personalStatement">Personal
-                                    Statement</label>
-                                <textarea
-                                    className={styles.textarea}
-                                    id="personalStatement"
-                                    value={personalStatement}
-                                    onChange={(e) => setPersonalStatement(e.target.value)}
-                                    placeholder="A brief personal statement or summary"
-                                    title="Add a short personal statement to include in your intro"
-                                    rows={3}
-
-                                />
-                            </div>
-
-                            <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
-                                <label className={styles.label} htmlFor="personalBackground">Personal
-                                    Background</label>
-                                <textarea
-                                    className={styles.textarea}
-                                    id="personalBackground"
-                                    value={personalBackground}
-                                    onChange={(e) => setPersonalBackground(e.target.value)}
-                                    placeholder="A few sentences about you"
-                                    title="Share a bit about your personal background"
-                                    rows={3}
-                                />
-                            </div>
-
-
-
-                            <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
-                                <label className={styles.label}
-                                    htmlFor="professionalBackground">Professional
-                                    Background</label>
-                                <textarea
-                                    className={styles.textarea}
-                                    id="professionalBackground"
-                                    value={professionalBackground}
-                                    onChange={(e) => setProfessionalBackground(e.target.value)}
-                                    placeholder="Work experience or roles"
-                                    title="Jobs, internships, roles, notable projects"
-                                    rows={3}
-
-                                />
-                            </div>
-
-                            <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
-                                <label className={styles.label} htmlFor="academicBackground">Academic
-                                    Background</label>
-                                <textarea
-                                    className={styles.textarea}
-                                    id="academicBackground"
-                                    value={academicBackground}
-                                    onChange={(e) => setAcademicBackground(e.target.value)}
-                                    placeholder="Schools, major, focus, etc."
-                                    title="Academic interests, research, concentrations, honors"
-                                    rows={3}
-
-                                />
-                            </div>
-
-                            <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
-                                <label className={styles.label} htmlFor="primaryComputer">Primary
-                                    Computer</label>
-                                <input
-                                    className={styles.input}
-                                    id="primaryComputer"
-                                    type="text"
-                                    value={primaryComputer}
-                                    onChange={(e) => setPrimaryComputer(e.target.value)}
-                                    placeholder="Your main device(s)"
-                                    title="Your primary computer(s) or devices"
-
-                                />
-                            </div>
-                        </div>
-
-                        <hr className={styles.divider} />
-
-                        <div className={styles.courses}>
-                            <div className={styles.rowBetween}>
-                                <h4 style={{ fontSize: '1rem', fontWeight: 600, margin: 0 }}>Courses</h4>
-                                <button
-                                    className={styles.btn}
-                                    type="button"
-                                    onClick={() => setCourses(prev => [...prev, {
-                                        name: "",
-                                        reason: "",
-                                        dept: "",
-                                        number: ""
-                                    }])}
-
-                                    aria-label="Add course"
-                                >
-                                    + Add Course
-                                </button>
-                            </div>
-
-                            {courses.length === 0 && (
-                                <p className={styles.hint}>No courses added. Use "Add Course" to include one.</p>
-                            )}
-
-                            <div>
-                                {courses.map((c, idx) => (
-                                    <div key={idx} className={styles.courseCard}>
-                                        <div className={styles.courseHeader}>
-                                            <span className={styles.muted}>Course {idx + 1}</span>
-                                            <button
-                                                className={styles.btn}
-                                                type="button"
-                                                onClick={() => setCourses(prev => prev.filter((_, i) => i !== idx))}
-
-                                                aria-label={`Remove course ${idx + 1}`}
-                                            >
-                                                Remove
-                                            </button>
-                                        </div>
-                                        <div className={styles.courseGrid}>
-                                            <div className={styles.field}>
-                                                <label className={styles.label}
-                                                    htmlFor={`course-dept-${idx}`}>Department Prefix</label>
-                                                <input
-                                                    className={styles.input}
-                                                    id={`course-dept-${idx}`}
-                                                    type="text"
-                                                    value={c.dept}
-                                                    onChange={(e) => {
-                                                        const v = e.target.value;
-                                                        setCourses(prev => prev.map((pc, i) => i === idx ? ({
-                                                            ...pc,
-                                                            dept: v
-                                                        }) : pc));
-                                                    }}
-                                                    placeholder="Prefix"
-                                                    title="Department prefix (e.g., ITIS, MATH)"
-
-                                                />
-                                            </div>
-                                            <div className={styles.field}>
-                                                <label className={styles.label}
-                                                    htmlFor={`course-number-${idx}`}>Course #</label>
-                                                <input
-                                                    className={styles.input}
-                                                    id={`course-number-${idx}`}
-                                                    type="text"
-                                                    value={c.number}
-                                                    onChange={(e) => {
-                                                        const v = e.target.value;
-                                                        setCourses(prev => prev.map((pc, i) => i === idx ? ({
-                                                            ...pc,
-                                                            number: v
-                                                        }) : pc));
-                                                    }}
-                                                    placeholder="####"
-                                                    title="Numeric course identifier (e.g., 3135)"
-
-                                                />
-                                            </div>
-                                            <div className={`${styles.field} ${styles.full}`}>
-                                                <label className={styles.label}
-                                                    htmlFor={`course-name-${idx}`}>Course Name</label>
-                                                <input
-                                                    className={styles.input}
-                                                    id={`course-name-${idx}`}
-                                                    type="text"
-                                                    value={c.name}
-                                                    onChange={(e) => {
-                                                        const v = e.target.value;
-                                                        setCourses(prev => prev.map((pc, i) => i === idx ? ({
-                                                            ...pc,
-                                                            name: v
-                                                        }) : pc));
-                                                    }}
-                                                    placeholder="Name of the course..."
-                                                    title="Full course title (no section)"
-
-                                                />
-                                            </div>
-                                            <div className={`${styles.field} ${styles.full}`}>
-                                                <label className={styles.label}
-                                                    htmlFor={`course-reason-${idx}`}>Reason for taking</label>
-                                                <textarea
-                                                    className={styles.input}
-                                                    id={`course-reason-${idx}`}
-                                                    // type="text"
-                                                    value={c.reason}
-                                                    onChange={(e) => {
-                                                        const v = e.target.value;
-                                                        setCourses(prev => prev.map((pc, i) => i === idx ? ({
-                                                            ...pc,
-                                                            reason: v
-                                                        }) : pc));
-                                                    }}
-                                                    placeholder="Why you're taking the course..."
-                                                    title="Why you selected or need this course"
-
-                                                />
-                                            </div>
                                         </div>
                                     </div>
-                                ))}
-                            </div>
-                        </div>
 
-                        <hr className={styles.divider} />
+                                    <div className={styles.gridTwo}>
+                                        <NameFields
+                                            firstName={firstName}
+                                            setFirstName={setFirstName}
+                                            middleInitial={middleInitial}
+                                            setMiddleInitial={setMiddleInitial}
+                                            preferredName={preferredName}
+                                            setPreferredName={setPreferredName}
+                                            lastName={lastName}
+                                            setLastName={setLastName}
+                                        />
+                                        <MascotAndImageFields
+                                            mascot={mascot}
+                                            onMascotChange={setMascot}
+                                            divider={divider}
+                                            onDividerChange={setDivider}
+                                            onImageFileChange={handleImageFileChange}
+                                        />
+                                        <BioFields
+                                            imageCaption={imageCaption}
+                                            setImageCaption={setImageCaption}
+                                            personalStatement={personalStatement}
+                                            setPersonalStatement={setPersonalStatement}
+                                            personalBackground={personalBackground}
+                                            setPersonalBackground={setPersonalBackground}
+                                            professionalBackground={professionalBackground}
+                                            setProfessionalBackground={setProfessionalBackground}
+                                            academicBackground={academicBackground}
+                                            setAcademicBackground={setAcademicBackground}
+                                            primaryComputer={primaryComputer}
+                                            setPrimaryComputer={setPrimaryComputer}
+                                        />
+                                    </div>
 
-                        {/* Quote */}
-                        <div className={styles.gridTwo}>
-                            <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
-                                <label className={styles.label} htmlFor="quote">Quote</label>
-                                <textarea
-                                    className={styles.textarea}
-                                    id="quote"
-                                    value={quote}
-                                    onChange={(e) => setQuote(e.target.value)}
-                                    placeholder="An inspiring or meaningful quote"
-                                    title="Add a quote to appear after courses"
-                                    rows={2}
-                                />
-                            </div>
-                            <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
-                                <label className={styles.label} htmlFor="quoteAuthor">Quote Author</label>
-                                <input
-                                    className={styles.input}
-                                    id="quoteAuthor"
-                                    type="text"
-                                    value={quoteAuthor}
-                                    onChange={(e) => setQuoteAuthor(e.target.value)}
-                                    placeholder="Who said the quote"
-                                    title="Name of the quote's author"
-                                />
-                            </div>
-                        </div>
+                                    <hr className={styles.divider} />
 
-                        <hr className={styles.divider} />
+                                    <FactsFields
+                                        funnyThing={funnyThing}
+                                        setFunnyThing={setFunnyThing}
+                                        interestingThing={interestingThing}
+                                        setInterestingThing={setInterestingThing}
+                                    />
 
-                        {/* Links */}
-                        <div className={styles.gridTwo}>
-                            <div className={styles.field}>
-                                <label className={styles.label} htmlFor="cltWeb">CLT Web</label>
-                                <input
-                                    className={styles.input}
-                                    id="cltWeb"
-                                    type="url"
-                                    value={linkCltWeb}
-                                    onChange={(e) => setLinkCltWeb(e.target.value)}
-                                    placeholder="https://webpages.charlotte.edu/username/"
-                                    title="UNC Charlotte personal web URL"
-                                />
-                            </div>
+                                    <hr className={styles.divider} />
 
-                            <div className={styles.field}>
-                                <label className={styles.label} htmlFor="github">GitHub (profile)</label>
-                                <input
-                                    className={styles.input}
-                                    id="github"
-                                    type="url"
-                                    value={linkGithub}
-                                    onChange={(e) => setLinkGithub(e.target.value)}
-                                    placeholder="https://github.com/username"
-                                    title="GitHub profile URL"
-                                />
-                            </div>
+                                    <QuoteFields
+                                        quote={quote}
+                                        setQuote={setQuote}
+                                        quoteAuthor={quoteAuthor}
+                                        setQuoteAuthor={setQuoteAuthor}
+                                    />
 
-                            <div className={styles.field}>
-                                <label className={styles.label} htmlFor="githubIo">GitHub.io</label>
-                                <input
-                                    className={styles.input}
-                                    id="githubIo"
-                                    type="url"
-                                    value={linkGithubIo}
-                                    onChange={(e) => setLinkGithubIo(e.target.value)}
-                                    placeholder="https://username.github.io/"
-                                    title="GitHub Pages (username.github.io)"
-                                />
-                            </div>
+                                    <hr className={styles.divider} />
 
-                            <div className={styles.field}>
-                                <label className={styles.label} htmlFor="courseIo">Course.io</label>
-                                <input
-                                    className={styles.input}
-                                    id="courseIo"
-                                    type="url"
-                                    value={linkCourseIo}
-                                    onChange={(e) => setLinkCourseIo(e.target.value)}
-                                    placeholder="https://username.github.io/course/"
-                                    title="Course page hosted on GitHub Pages"
-                                />
-                            </div>
+                                    <LinksFields
+                                        linkCltWeb={linkCltWeb}
+                                        setLinkCltWeb={setLinkCltWeb}
+                                        linkGithub={linkGithub}
+                                        setLinkGithub={setLinkGithub}
+                                        linkGithubIo={linkGithubIo}
+                                        setLinkGithubIo={setLinkGithubIo}
+                                        linkCourseIo={linkCourseIo}
+                                        setLinkCourseIo={setLinkCourseIo}
+                                        linkFreeCodeCamp={linkFreeCodeCamp}
+                                        setLinkFreeCodeCamp={setLinkFreeCodeCamp}
+                                        linkCodecademy={linkCodecademy}
+                                        setLinkCodecademy={setLinkCodecademy}
+                                        linkLinkedIn={linkLinkedIn}
+                                        setLinkLinkedIn={setLinkLinkedIn}
+                                    />
 
-                            <div className={styles.field}>
-                                <label className={styles.label} htmlFor="freeCodeCamp">freeCodeCamp (profile)</label>
-                                <input
-                                    className={styles.input}
-                                    id="freeCodeCamp"
-                                    type="url"
-                                    value={linkFreeCodeCamp}
-                                    onChange={(e) => setLinkFreeCodeCamp(e.target.value)}
-                                    placeholder="https://www.freecodecamp.org/username"
-                                    title="freeCodeCamp profile URL"
-                                />
-                            </div>
+                                    <CourseEditor
+                                        courses={courses}
+                                        setCourses={setCourses}
+                                        showCourses={showCourses}
+                                        setShowCourses={setShowCourses}
+                                    />
 
-                            <div className={styles.field}>
-                                <label className={styles.label} htmlFor="codecademy">Codecademy (profile)</label>
-                                <input
-                                    className={styles.input}
-                                    id="codecademy"
-                                    type="url"
-                                    value={linkCodecademy}
-                                    onChange={(e) => setLinkCodecademy(e.target.value)}
-                                    placeholder="https://www.codecademy.com/profiles/username"
-                                    title="Codecademy profile URL"
-                                />
-                            </div>
 
-                            <div className={styles.field}>
-                                <label className={styles.label} htmlFor="linkedIn">LinkedIn (profile)</label>
-                                <input
-                                    className={styles.input}
-                                    id="linkedIn"
-                                    type="url"
-                                    value={linkLinkedIn}
-                                    onChange={(e) => setLinkLinkedIn(e.target.value)}
-                                    placeholder="https://www.linkedin.com/in/username/"
-                                    title="LinkedIn profile URL"
-                                />
-                            </div>
-                        </div>
+
+                                </div>
+                            </form>
+                        </section>
+
+
                     </div>
-                </form>
-            </section>
+                </div>
+            </div>
+        </Protect>
 
-            
-            </div>
-            </div>
-        </div>
     </>
 }
