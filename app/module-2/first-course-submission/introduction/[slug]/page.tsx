@@ -2,8 +2,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import styles from "../IntroductionGenerator.module.css";
-
-type Course = { dept: string; number: string; name: string; reason: string };
+import { Course, IntroLinks } from "../types";
 type IntroData = {
   firstName: string;
   preferredName: string;
@@ -21,15 +20,9 @@ type IntroData = {
   courses: Course[];
   quote?: string;
   quoteAuthor?: string;
-  links?: {
-    cltWeb?: string;
-    github?: string;
-    githubIo?: string;
-    courseIo?: string;
-    freeCodeCamp?: string;
-    codecademy?: string;
-    linkedIn?: string;
-  };
+  funnyThing?: string;
+  interestingThing?: string;
+  links?: Partial<IntroLinks>;
 };
 
 export default function IntroPreviewPage() {
@@ -139,6 +132,8 @@ export default function IntroPreviewPage() {
     courses,
     quote,
     quoteAuthor,
+    funnyThing,
+    interestingThing,
     links,
   } = data;
 
@@ -200,7 +195,7 @@ export default function IntroPreviewPage() {
             </div>
 
             <figure>
-              <img src={image || "http://localhost:3000/module-2/first-course-submission/introduction/test"} alt={imageCaption} width={500} height={500} />
+              <img src={image || "/headshot.jpeg"} alt={imageCaption} width={500} height={500} />
               {imageCaption ? (
                 <figcaption className={styles.hint}>
                   <em>{imageCaption}</em>
@@ -226,6 +221,14 @@ export default function IntroPreviewPage() {
               <li>
                 <strong>Primary Computer: </strong>
                 {primaryComputer || "None."}
+              </li>
+              <li>
+                <strong>Funny thing about me: </strong>
+                {funnyThing || "None yet."}
+              </li>
+              <li>
+                <strong>Interesting thing about me: </strong>
+                {interestingThing || "None yet."}
               </li>
               <li>
                 <strong>Courses I'm Taking and Why:</strong>

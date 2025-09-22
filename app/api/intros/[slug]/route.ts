@@ -111,6 +111,8 @@ function sanitizeIntro(input: any) {
   out.primaryComputer = str(input.primaryComputer)
   out.quote = str(input.quote)
   out.quoteAuthor = str(input.quoteAuthor)
+  out.funnyThing = str(input.funnyThing)
+  out.interestingThing = str(input.interestingThing)
   out.links = typeof input.links === 'object' && input.links !== null ? {
     cltWeb: str(input.links.cltWeb),
     github: str(input.links.github),

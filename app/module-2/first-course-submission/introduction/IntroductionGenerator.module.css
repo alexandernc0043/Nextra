@@ -349,6 +349,8 @@
   gap: .5rem;
   align-items: center;
   flex-wrap: nowrap;
+  width: 100%;
+  margin-bottom: 2rem;
 }
 
 .badge {

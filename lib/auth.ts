@@ -43,7 +43,29 @@ export function isAdminUser(userId: string | null | undefined, sessionClaims: Se
     }
   }
 
+  if (hasModeratorMetadata(sessionClaims) && hasModeratorRole(sessionClaims)) {
+    return true
+  }
+
   return false
+}
+
+function hasModeratorMetadata(sessionClaims: SessionClaims) {
+  if (!sessionClaims || typeof sessionClaims !== 'object') {
+    return false
+  }
+  const claims = sessionClaims as Record<string, unknown>
+  const publicMetadata = claims.publicMetadata
+  if (!publicMetadata || typeof publicMetadata !== 'object') {
+    return false
+  }
+  const metadata = publicMetadata as Record<string, unknown>
+  return metadata.canModerateIntros === true
+}
+
+function hasModeratorRole(sessionClaims: SessionClaims) {
+  const roles = gatherRoles(sessionClaims)
+  return roles.includes('moderator')
 }
 
 function gatherEmails(sessionClaims: SessionClaims) {
@@ -198,6 +220,7 @@ function gatherOrgMemberships(sessionClaims: SessionClaims): OrgMembership[] {
       memberships.push({ orgId, roles: Array.from(roles) })
     }
   }
+
   return memberships
 }
 
@@ -206,26 +229,34 @@ function canModerateIntrosUser(sessionClaims: SessionClaims, isAdmin: boolean) {
     return true
   }
 
+  const metadata = sessionClaims && typeof sessionClaims === 'object'
+    ? (sessionClaims as Record<string, unknown>).publicMetadata
+    : undefined
+  if (metadata && typeof metadata === 'object') {
+    const pub = metadata as Record<string, unknown>
+    if (pub.canModerateIntros === true) {
+      return true
+    }
+  }
+
+  const memberships = gatherOrgMemberships(sessionClaims)
   const allowedOrgIds = Array.from(
     new Set([
       ...parseList(process.env.CLERK_INTRO_MODERATOR_ORG_IDS),
       ...parseList(process.env.CLERK_INTRO_MODERATOR_ORG_ID),
     ])
   )
-  if (allowedOrgIds.length === 0) {
-    return false
-  }
   const allowedRoles = Array.from(
     new Set([
       ...parseList(process.env.CLERK_INTRO_MODERATOR_ROLES, { toLowerCase: true }),
       ...parseList(process.env.CLERK_INTRO_MODERATOR_ROLE, { toLowerCase: true }),
     ])
   )
-  if (allowedRoles.length === 0) {
+
+  if (allowedOrgIds.length === 0 || allowedRoles.length === 0) {
     return false
   }
 
-  const memberships = gatherOrgMemberships(sessionClaims)
   return memberships.some(
     (membership) =>
       allowedOrgIds.includes(membership.orgId) &&
