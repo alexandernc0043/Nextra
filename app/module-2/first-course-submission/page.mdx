@@ -1,3 +1,198 @@
 # Assignment Instructions
 
-Hello World
+## Overview
+
+Modify your course home page `itis3135/index.html` that serves as your main landing page for both your school website and GitHub course pages. This page should be professional, represent you well, and serve as a gateway to your coursework and professional profiles. You should go through the first HTML tutorials before doing this.
+
+This website should have a different look and feel from your Personal Homepage.
+
+### Modify index.html
+
+#### Add Sematic HTML Elements
+
+In addition to the boilerplate HTML code all pages should use in addition:
+
+##### Header (`<header></header>{:html}`)
+
+- `<h1></h1>{:html}`
+- `<nav></nav>{:html}`
+    - `<ul></ul>{:html}`
+
+> [!NOTE]
+>
+> Your H1 should be the name of your website.
+
+##### Main (`<main></main>{:html}`)
+
+- `<h2></h2>{:html}`
+
+> [!NOTE]
+>
+> Your H2 should be the name of your page
+
+##### Footer (`<footer></footer>{:html}`)
+
+Your footer should contain navigation links with a divider seperating each link
+
+**Example:** [GitHub](https://www.github.com/alexandernc0043) ~ [GitHub.io](https://alexandernc0043.github.io) ~ [LinkedIn](https://www.linkedin.com/in/alexander-prechtel-b4a0a9283/) ~ [freeCodeCamp](https://www.freecodecamp.org/aprechte) ~ [Codecademy](https://www.codecademy.com/profiles/aprechte)
+
+- Links:
+    - GitHub
+    > This should link to your GitHub Profile\
+    > **Example:** [github.com/alexandernc0043](https://www.github.com/alexandernc0043)
+
+    - GitHub.io
+    > This should link to your GitHub Pages\
+    > **Example:** [alexandernc0043.github.io](https://alexandernc0043.github.io)
+
+    - LinkedIn
+    > This should link to your LinkedIn Profile\
+    > **Example:** [https://www.linkedin.com/in/alexander-prechtel-b4a0a9283/](https://www.linkedin.com/in/alexander-prechtel-b4a0a9283/)
+
+    - freeCodeCamp
+    > This should link to your freeCodeCamp Profile\
+    > **THIS LINK SHOULD BE IN camelCase** \
+    > **Example:** [https://www.freecodecamp.org/aprechte](https://www.freecodecamp.org/aprechte)
+    
+    - Codecademy
+    > This should link to your Codecademy Profile\
+    > **MAKE SURE TO SPELL Codecademy correctly. It is not CodeAcademy.** \
+    > **Example:** [https://www.codecademy.com/profiles/aprechte](https://www.codecademy.com/profiles/aprechte)
+    
+
+> [!TIP]
+>
+> For the external links like GitHub, GitHub.io, and LinkedIn you may want to consider using `target="_blank"` in your anchor elements as these will open these links in new tabs instead of the current one.
+>
+> See this [resource](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#target) for more details.
+
+##### Title (`<title></title>{:html}`)
+
+Your title should be a combination of your heading 1, heading 2, and a divider of your choice. 
+
+For example if my heading 1 is `Alexander Prechtel's Advanced Pegasus | ITIS 3135` and my heading 2 is `Home` my title should be `Alexander Prechtel's Advanced Pegasus | ITIS 3135 | Home`.
+
+#### Cascading Style Sheets (CSS)
+
+You need to use an external stylesheet inside your `styles` folder. To add an external stylesheet you need to use the `<link></link>{:html}` element.
+
+###### Styling Requirements
+
+Update atleast these elements, using at minimum; `<body>{:html}`, `<h1>{:html}`, and `<h2>{:html}` selectors.
+
+1. Fonts 
+> (pick at least two, and differentiate between normal text and headings - generally headings can be more stylized than normal text)
+
+2. Colors
+> (hint: [coolors.co](https://coolors.co/generate) - save the URL for reference as it includes your colors.) - at least a background color and font color
+
+3. Margins
+> (auto 0, and max-width to something between 600-1000, and width to 80-95%) 
+
+> [!IMPORTANT]
+>
+> Your course page should look different from your personal homepage.
+
+#### Validation
+
+Ensure your personal homepage includes the Accumulus Validator. See this [assignement](accumulus)
+
+### Create your Introduction
+
+Using the introduction you made for [assignment M0b](/module-1/m0b) you need to recreate your introduction using the HTML elements you have learned so far. This should be inside a new file called `introduction.html`.
+
+Your new webpage should also contain the same things you just added to your `index.html` above.
+
+#### Non Bulleted Items
+
+##### Image
+
+You should add the same image that you used on your introduction ensuring that it is properly sized. Images over 4k pixels will throw an error with accumulus which if you have added it correctly you should be able to see it in the corner.
+
+Your image should use a `<figure></figure>{:html}` element with approriate alt text and a `<figcaption></figcaption>{:html}`.
+
+You should style your figcaption to be centered underneath your image. 
+
+Confused? See this [resource](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/figure).
+
+##### Personal Statement
+
+Your personal statement should use a paragraph element 
+
+#### Bulleted Items
+
+Each item should start with the name of it being bolded.
+
+**Example:** 
+
+- **Personal Background:** eiusmod ex dolore velit velit amet consectetur laborum proident dolore.
+
+##### Personal Background
+
+Contains your personal background from your introduction.
+
+##### Professional Background
+
+Contains your professional background from your introduction. If you do not have any write, None, or N/A.
+
+##### Academic Background
+
+Contains your academic background from your introduction.
+
+##### Primary Computer & Work Location
+
+Contains your primary computer, work location, and backup plan if anything happens to your laptop. 
+
+##### Funny Thing About Me
+
+Optional requirement, but if you don't wish to include it leave it off your introduction don't put None or N/A.
+
+##### Intresting Thing About Me
+
+Optional requirement, but if you don't wish to include it leave it off your introduction don't put None or N/A.
+
+##### Courses
+
+You should have Courses in bold and then a nested ordered list inside the same list item element. Inside that ordered list you will add each of your classes with it's department and number followed by its name all in bold and then the reason you are taking it.
+
+If you've done it correctly it should look something like this:
+
+- **Courses:**
+    1. **ITIS 3135 — Web Based Application Development:** I love web development!
+    2. **ITIS 4250 — Computer Forensics:** Required course for my concentration but the course’s subject also interests me.
+
+#### Quote
+
+This should be after your unordered list and should be centered to your introduction. Below the quote on a new line you should have the quote author emphasized and centered.
+
+### Contract
+
+Create a new file called contract.html
+
+Inside that file you will do the same steps as before in your `index.html` and inside your main should need to add the following text.
+
+```
+I, FIRST M. LAST agree to abide by the terms of the course contract in my SEMESTER YYYY, ABC123, NAME OF CLASS with my instructor, Professor D.I. von Briesen. 
+I understand that all work that I do on publicly available online tools will be available to the world, and will not put information there that is inappropriate for schoolwork, or that I wish to keep private. 
+I also understand that it is my work that counts for attendance, not logins or showing up for class. 
+As such, failure to turn in assignments may show as absences. 
+I also understand that given the structure and content of this class it’s possible to find many examples online or even view my classmates’ code directly. 
+I swear that I will only use these resources to learn, and will not cut and paste code except where I have properly given credit (i.e. external libraries) and never from my classmates. 
+
+Signed: First M. Last , DD/MM/YYYY
+```
+
+### Modify your navigation
+
+If you've been following along correctly you should a nav element with a unordered list inside every page you have just created.
+
+Inside the unordered list add a list item with an anchor element inside with the following links
+
+- Home
+> This should take you back to your course home page (index.html)
+
+- Introduction
+> This should take you to your introduction page (introduction.html)
+
+- Contract
+> This should take you to your contract page. (contract.html)
