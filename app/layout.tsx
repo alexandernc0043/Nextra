@@ -67,7 +67,7 @@ export default async function RootLayout({children}: {children: ReactNode}) {
                 <Analytics/>
                 {/* Your additional tags should be passed as `children` of `<Head>` element */}
             </Head>
-            <body>
+            <body data-pagefind-body>
             
             <Layout
                 banner={banner}

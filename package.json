@@ -10,7 +10,7 @@
     "dev": "next --turbopack",
     "build": "next build",
     "start": "next start",
-    "postbuild": "node scripts/run-pagefind.mjs"
+    "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.32.0",
