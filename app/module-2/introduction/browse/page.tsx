@@ -108,7 +108,7 @@ function BrowseIntrosContent() {
               onChange={(e) => setQ(e.target.value)}
               style={{ maxWidth: 420 }}
             />
-            <button className={styles.btn} onClick={() => router.push("/module-2/first-course-submission/introduction")}>New introduction</button>
+            <button className={styles.btn} onClick={() => router.push("/module-2/introduction/")}>New introduction</button>
           </div>
 
           {loading && <p className={styles.muted}>Loading…</p>}
@@ -121,7 +121,7 @@ function BrowseIntrosContent() {
                   <div className={styles.rowBetween}>
                     <div>
                       <div style={{ fontWeight: 600 }}>
-                        <a href={`/module-2/first-course-submission/introduction/${encodeURIComponent(it.slug)}`}
+                        <a href={`/module-2/introduction/${encodeURIComponent(it.slug)}`}
                            title={`Open ${it.slug}`}
                         >
                           {displayName(it)}
@@ -135,13 +135,13 @@ function BrowseIntrosContent() {
                     <div className={styles.toolbar}>
                       <button
                         className={styles.btn}
-                        onClick={() => router.push(`/module-2/first-course-submission/introduction/${it.slug}`)}
+                        onClick={() => router.push(`/module-2/introduction/${it.slug}`)}
                       >
                         Open
                       </button>
                       <button
                         className={styles.btn}
-                        onClick={() => copyLink(`/module-2/first-course-submission/introduction/${it.slug}`)}
+                        onClick={() => copyLink(`/module-2/introduction/${it.slug}`)}
                       >
                         Copy link
                       </button>

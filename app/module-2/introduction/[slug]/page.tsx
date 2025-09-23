@@ -107,7 +107,7 @@ export default function IntroPreviewPage() {
     return (
       <div className={styles.card}>
         <p>Couldn’t find an introduction for this slug.</p>
-        <button className={styles.btn} onClick={() => router.push("/module-2/first-course-submission/introduction/browse")}>Back to browse</button>
+        <button className={styles.btn} onClick={() => router.push("/module-2/introduction/browse")}>Back to browse</button>
       </div>
     );
   }
@@ -158,7 +158,7 @@ export default function IntroPreviewPage() {
             <div className={styles.toolbar}>
               <button
                 className={`${styles.btn} ${styles.btnGhost}`}
-                onClick={() => router.push("/module-2/first-course-submission/introduction/browse")}
+                onClick={() => router.push("/module-2/introduction/browse")}
               >
                 Back to browse
               </button>
