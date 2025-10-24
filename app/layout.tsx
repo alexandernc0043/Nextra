@@ -11,8 +11,8 @@ export const metadata: Metadata = {
   // For more information on metadata API, see: https://nextjs.org/docs/app/building-your-application/optimizing/metadata
   title: {
     default: "Instructions",
-    template: "%s | Instructions"
-  }
+    template: "%s | Instructions",
+  },
 };
 const banner = (
   <Banner storageKey="some-key" dismissible={false}>
@@ -24,7 +24,14 @@ const navbar = (
     logo={<b>Alexander Prechtel's Instructions</b>}
     // ... Your additional navbar options
     projectLink={"https://github.com/alexandernc0043/Nextra"}
-  />
+  >
+    <a
+      href="https://docs.google.com/document/d/1ojjgZa6BVw2T2nQk-azxsbzoSEYKUilMcKHhWgWY9uo/edit?tab=t.0"
+      target="_blank"
+    >
+      Agenda
+    </a>
+  </Navbar>
 );
 const footer = (
   <Footer>MIT {new Date().getFullYear()} © Alexander Prechtel.</Footer>
