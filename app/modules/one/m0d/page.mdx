@@ -1,8 +1,8 @@
-# Assignment M0d
+# Set up Your University Webspace
 
 import { Callout } from "nextra/components";
-import { Steps } from 'nextra/components'
-import { FileTree } from 'nextra/components'
+import { Steps } from "nextra/components";
+import { FileTree } from "nextra/components";
 
 ## Set up your computer
 
@@ -15,34 +15,34 @@ import { FileTree } from 'nextra/components'
     2. Click **View**
     3. Hover over **Show**
     4. Click **File name Extensions**
-    
+
     - **macOS Instructions:**
     1. Open Finder
     2. Click **Finder** on the menu bar (top left)
     3. Click **Settings** (Shortcut: CMD + ,)
     4. Navigate to **Advanced**
     5. Enable **Show all filename extensions**
-    
+
     ### Install a Code Editor
-    
+
     We recommend using Visual Studio Code (VS Code) which can be downloaded [here](https://code.visualstudio.com/).
     If you install Visual Studio Code, please download the [Live Server
     Extension](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) from the Extensions
     Marketplace.
-    
+
     ### Install an FTP Client
-    
+
     We recommend using [FileZilla](https://filezilla-project.org/) which is free and works on Windows, macOS, and Linux.
-    
+
     ### Install the University's VPN Client
-    
+
     You can download the VPN from [here](https://vpn.charlotte.edu)
     > **Username:** `Niner_Net_username@charlotte.edu`\
     > **Password:** `Niner_Net_password`\
     > **Note:** Replace the bolded parts with your university provided login
-    
+
     ### Install GitHub Desktop
-    
+
     You can download GitHub Desktop from [here](https://desktop.github.com/download/).\
     > [!NOTE]
     >
@@ -86,7 +86,7 @@ import { FileTree } from 'nextra/components'
 <Steps>
 
     ### Create index.html
-    
+
     Inside your folder create a file named `index.html`
 
     > [!WARNING]
@@ -94,12 +94,12 @@ import { FileTree } from 'nextra/components'
     > Make sure not to name it something like `index.html.txt`, `Index.html`, or `INDEX.HTML`. it must be `index.html` all lowercase.
 
     ### Generate the boilerplate code
-    
+
     Using Visual Studio Code's [Emmett](https://docs.emmet.io/cheat-sheet/) tool type an ! and hit Tab or Enter on your
     keyboard.
-    
+
     Your file should look like this now:
-    
+
     ```html filename="USERNAME.github.io/index.html"
     <!DOCTYPE html>
     <html lang="en">
@@ -111,35 +111,35 @@ import { FileTree } from 'nextra/components'
     <body></body>
     </html>
     ```
-    
+
     ### Edit your title
-    
+
     You can edit the title by editing the word Document inside this element `<title>Document</title>{:html}` with \[YOUR_NAME\] \[Divider\] Homepage
 
     **Example(s):**
-    
+
     ```html
     <title>Alexander Prechtel | Homepage</title>
     <title>Alexander Prechtel ~ Homepage</title>
     <title>Alexander Prechtel - Homepage</title>
     ```
-    
+
     ### Add a heading
-    
+
     Inside your body element add a Heading 1 element `<h1>` and put the following:
-    
+
     ```html
     <h1>Welcome to my homepage!</h1>
     ```
-    
+
     ### Add a link to your course page
-    
+
     Add an anchor element `<a>` after your heading 1 element that will take you to your course page.
-    
+
     ```html
     <a href="itis3135">Click here to go to my ITIS-3135 course page!</a>
     ```
-    
+
     > [!TIP]
     >
     > The `href` attribute stands for hypertext reference and the value of it is where your link will go.
@@ -158,60 +158,61 @@ import { FileTree } from 'nextra/components'
 
 <Steps>
 
-   ### Create your course folder
+### Create your course folder
 
-   Inside your YOUR_GITHUB_USERNAME.github.io folder create a folder named `itis3135`
-   > [!NOTE]
-   >
-   > In the future your YOUR_GITHUB_USERNAME.github.io folder will be referred to as the "root" of your website
+Inside your YOUR_GITHUB_USERNAME.github.io folder create a folder named `itis3135`
 
-   ### Create your second `index.html` file
+> [!NOTE]
+>
+> In the future your YOUR_GITHUB_USERNAME.github.io folder will be referred to as the "root" of your website
 
-   Inside your `itis3135` folder create a new file called `index.html`
+### Create your second `index.html` file
 
-   ### Open your new `index.html`
+Inside your `itis3135` folder create a new file called `index.html`
 
-   Inside your new `index.html` file copy the contents from your previous `index.html` file.
+### Open your new `index.html`
 
-   ### Remove the link (`<a>...</a>{:html}`)
+Inside your new `index.html` file copy the contents from your previous `index.html` file.
 
-   Since you are already on your course page you don't need a link to your course page.
+### Remove the link (`<a>...</a>{:html}`)
 
-   ### Replace homepage
+Since you are already on your course page you don't need a link to your course page.
 
-   Everywhere you see homepage you should replace with `ITIS-3135 course page`
+### Replace homepage
 
-   Your new `index.html` file should look like this now:
+Everywhere you see homepage you should replace with `ITIS-3135 course page`
 
-   ```html filename="USERNAME.github.io/itis3135/index.html"
-   <!DOCTYPE html>
-   <html lang="en">
-   <head>
-       <meta charset="UTF-8"/>
-       <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-       <title>Alexander Prechtel | ITIS-3135 Course page</title>
-   </head>
-   <body>
-   <h1>Welcome to my ITIS-3135 course page!</h1>
-   <!-- If your link is still here remove it.--->
-   </body>
-   </html>
-   ```
+Your new `index.html` file should look like this now:
 
-   ### Create more folders
+```html filename="USERNAME.github.io/itis3135/index.html"
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Alexander Prechtel | ITIS-3135 Course page</title>
+    </head>
+    <body>
+        <h1>Welcome to my ITIS-3135 course page!</h1>
+        <!-- If your link is still here remove it.--->
+    </body>
+</html>
+```
 
-   Inside your itis3135 folder create 6 new folders with the names:
+### Create more folders
 
-   1. images
-   2. components
-   3. scripts
-   4. styles
-   5. projects
-   6. archives
+Inside your itis3135 folder create 6 new folders with the names:
 
-   > [!TIP]
-   > 
-   > GitHub won't track folders with no files inside. You can add a [README.md](https://www.geeksforgeeks.org/git/what-is-readme-md-file/) file if you want to have it be tracked but that's not required.
+1. images
+2. components
+3. scripts
+4. styles
+5. projects
+6. archives
+
+> [!TIP]
+>
+> GitHub won't track folders with no files inside. You can add a [README.md](https://www.geeksforgeeks.org/git/what-is-readme-md-file/) file if you want to have it be tracked but that's not required.
 
 </Steps>
 
@@ -228,51 +229,51 @@ import { FileTree } from 'nextra/components'
     > This can take up to 10 minutes to provision.
 
     Once your webpage is created you can visit webpages.charlotte.edu/**YOUR_NINER_NET_USERNAME**/ and you should see a template website saying it's been created.
-    
+
     > **Example:** [https://webpages.charlotte.edu/aprechte/](https://webpages.charlotte.edu/aprechte/itis3135/z_archives/index.html)
 
     ### Use FileZilla to transfer your files to your university webspace.
-    
+
     > [!IMPORTANT]
-    > 
+    >
     > If you are off campus you will need to use the Cisco Secure VPN you
         installed in previous steps. Inside the box when opening Cisco Secure
         Client you will type **vpn.charlotte.edu** then Login with your NinerNet
         account details.
-    
+
     ### Connecting to the university's FTP server.
-    
+
     Details for connecting to the FTP Server
-    
+
     > **Host:** webpages.charlotte.edu\
     **Username:** YOUR_NINER_NET_USERNAME
     **Password:** YOUR_NINER_NET_PASSWORD\
     **Port:** 22
-    
-    Once you are connected you should see your computer's files on the left and the server's on the right    
-    
+
+    Once you are connected you should see your computer's files on the left and the server's on the right
+
     > [!WARNING]
-    > 
+    >
     > If you include **@charlotte.edu** in your username the connection will not work.
 
     ### On the server side open the `public_html` folder.
-    
+
     The `public_html` folder is where you should be placing all work on the FTP server.
-    
+
     ### Find your YOUR_GITHUB_USERNAME.github.io folder on your computer.
-    
+
     Your computer's files are the ones on the left side. Also the default location for GitHub repositories is Documents/GitHub.
-    
+
     ### Archive your default index.html
-    
+
     Once you have located your folder drag the `public_html/index.html` file on the server side inside your `YOUR_GITHUB_USERNAME.github.io/itis3135/archives` folder
-    
+
     ### Now move your project files
-    
+
     After you have archived the default `index.html` file, move your root `index.html` and the `itis3135` folder into the `public_html` folder on the server side.
-    
+
     Your file tree should look like this now:
-    
+
     <FileTree>
       <FileTree.Folder name="public_html" defaultOpen>
           <FileTree.Folder name="itis3135" defaultOpen>
@@ -289,26 +290,27 @@ import { FileTree } from 'nextra/components'
           <FileTree.File name="index.html" />
       </FileTree.Folder>
     </FileTree>
-    
+
     > [!TIP]
-    > 
+    >
     > This file tree is interactive :)
-    
+
     ### Commit your Changes
-    
+
     After you have successfully set up your university webspace go to GitHub Desktop and commit your changes
-    
+
     <Steps>
-    
+
         #### Add a summary
-    
+
         Type a brief summary into the box on GitHub desktop
-    
+
         #### Click commit # files
-    
+
         #### Click push origin
-    
+
     </Steps>
+
 </Steps>
 
 ## Submission
@@ -317,16 +319,16 @@ Please submit the following
 
 > **Note:** your university webpage and GitHub webpage should/need to be identical.
 
-* A screenshot of the entire FileZilla application showing your computer's files and server's files.
+- A screenshot of the entire FileZilla application showing your computer's files and server's files.
 
 > **Example:**
 >
 > ![FileZilla](/filezilla.png)
 
-* The URL for your UNCC webpage's itis3135 page.
+- The URL for your UNCC webpage's itis3135 page.
 
 > **Example:** [https://webpages.charlotte.edu/aprechte/itis3135/](https://webpages.charlotte.edu/aprechte/itis3135/)
 
-* The URL for your GitHub repository.
+- The URL for your GitHub repository.
 
 > **Example:** [https://github.com/alexandernc0043/alexandernc0043.github.io](https://github.com/alexandernc0043/alexandernc0043.github.io)
