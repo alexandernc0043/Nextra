@@ -3,19 +3,16 @@ import { Banner, Head, Search } from "nextra/components";
 import { getPageMap } from "nextra/page-map";
 import "nextra-theme-docs/style.css";
 import { Analytics } from "@vercel/analytics/next";
-import {
-  ClerkProvider,
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  SignUpButton,
-  UserButton,
-} from "@clerk/nextjs";
 import type { ReactNode } from "react";
+import { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
   // Define your metadata here
   // For more information on metadata API, see: https://nextjs.org/docs/app/building-your-application/optimizing/metadata
+  title: {
+    default: "Instructions",
+    template: "%s | Instructions"
+  }
 };
 const banner = (
   <Banner storageKey="some-key" dismissible={false}>
