@@ -1,0 +1,356 @@
+# React Setup Guide
+
+This is not a complete tutorial but is a guide to get you started with React.
+
+## Prerequisites
+
+- You have [Node.js](https://nodejs.org/en/download) Version 20.19 or greater installed on your computer
+- A Code Editor
+- GitHub Account
+- GitHub Desktop
+
+> [!TIP]
+>
+> To Check if you have Node.js installed you can open Terminal using the Start Menu (Windows) and Launchpad (MacOS) and using the command `node --version{:bash}` or `node -v{:bash}`, if it is installed it will return the version number
+
+```bash filename="Terminal - Checking for Node"
+alexanderp@Alexander-Macbook ~> node --version
+# v24.10.0
+
+alexanderp@Alexander-Macbook ~> node -v
+# v24.10.0
+```
+
+## Getting Started
+
+Once you have all the requirements, open your terminal and navigate to the folder you save your work in.
+
+> [!CAUTION]
+>
+> **DO NOT USE YOUR USERNAME.GITHUB.IO folder**
+
+To navigate using the Terminal use the `cd{:bash}` command followed by the name of the folder.
+
+> [!NOTE]
+>
+> Your Terminal should start you inside your home directory which is denoted by a `~` if you are not inside your home directory type `cd ~{:bash}` or `cd{:bash}`
+
+```bash filename="Terminal - Navigating to your home directory"
+alexanderp@Alexander-Macbook ~/randomFolder> cd
+alexanderp@Alexander-Macbook ~>
+```
+
+```bash filename="Terminal - Navigating to your GitHub Folder"
+alexanderp@Alexander-Macbook ~> cd Documents/
+alexanderp@Alexander-Macbook ~> cd GitHub/
+alexanderp@Alexander-Macbook ~/Documents/Github>
+```
+
+Navigating to your GitHub Folder
+
+> [!NOTE]
+>
+> The default location of the GitHub Folder is in your Documents folder, but if you moved it to another location you will need to locate it. You do not need to use the GitHub folder but it is recommended.
+
+If you have done everything correctly you should see your GitHub folder on the line of the terminal. You can also verify this is the correct directory by using the ls command and seeing if you see your USERNAME.github.io folder
+
+```bash filename="Terminal - Checking for files"
+alexanderp@Alexander-Macbook ~/Documents/GitHub> ls
+alexandernc0043.github.io/
+alexanderp@Alexander-Macbook ~/Documents/GitHub>
+```
+
+Contents of the GitHub Folder
+
+## Creating your React Project
+
+If you are in the correct place you now need to run the command to create your React Project. For this guide we will be using the vite template. Vite is a build tool that helps us build our projects. Read more about vite [here](https://vite.dev/guide/).
+
+1. Inside the Terminal run the command `npm create vite@latest{:bash}`
+    - npm stands for Node Package Manager
+    - create tells Node that we want to create a project
+    - vite is the name of the package we are using
+
+2. Then you should see prompts on your screen asking you for more project information.
+
+> [!NOTE]
+>
+> If it did not work and you get an error message (Windows in particular) saying running scripts are blocked on this machine follow this [guide](https://karchunt.com/blog/fix-powershell-npm-execution-policy/) to remedy the situation.
+
+3. For Project name type courseid-react (where course id is your course id)
+
+4. For framework select React, you will use the arrow keys to navigate through the menu, and use Enter to select.
+
+5. For the variant select JavaScript
+
+6. For rolldown-vite (Experimental) select No (Default)
+
+7. For install with npm and start now hit Yes (Default)
+
+8. If you did everything correctly you should see your choices here and see this screen when your app has started.
+
+```bash filename="Terminal - All Options for Vite"
+alexanderp@Alexander-Macbook ~/Documents/GitHub> npm create vite@latest
+
+> npx
+> "create-vite"
+
+│
+◇  Project name:
+│  itis3135-react
+│
+◇  Select a framework:
+│  React
+│
+◇  Select a variant:
+│  JavaScript
+│
+◇  Use rolldown-vite (Experimental)?:
+│  No
+│
+◇  Install with npm and start now?
+│  Yes
+│
+```
+
+```bash filename="Terminal - Vite Started"
+VITE v7.2.0  ready in 363 ms
+
+➜  Local:   http://localhost:5173/
+➜  Network: use --host to expose
+➜  press h + enter to show help
+```
+
+Vite Started
+
+> [!TIP]
+>
+> To open the localhost link you can hold (Command on MacOS and Control on Windows) and left click on the link to open it in your browser. Note that the number after the colon is the port- and it should find another port if that one is already in use on your computer. Note that “localhost” is always the name of your local webserver (if there is one). In this case Vite is creating and running a webserver, which runs your application.
+
+9. You should see the opening project page when you visit the site.
+
+![Vite Template Page](/reactimg/viteTemplatePage.png)
+
+## Creating Components
+
+From React’s Website a Component is “a piece of the UI (user interface) that has its own logic and appearance. A component can be as small as a button, or as large as an entire page” [React.dev](https://react.dev/learn)
+
+1. To create a component we will need to create a new file, with the same name as our component.
+
+> [!NOTE]
+>
+> Unlike our previous guidelines about file names, components SHOULD start with a captial letter.
+>
+> Also place all your code inside the `src` folder
+
+2. Once you create the file, create a function with the same name as the file, using the following code
+
+- Since we are creating a component and want to use this outside the file we will need to use a few more modifier keywords on the function so it is available to the rest of the project.
+    - `export{:js}` allows the function to be used outside the file.
+
+    - `default{:js}` just makes it the default export of the file.
+
+![Header Component](/reactimg/header/headerComponentTemplate.png)
+
+```jsx filename="src/Header.jsx" copy
+export default function Header() {
+  ...
+}
+```
+
+3. We need to return something we want the component to render. Since this component is creating a Header it should return the `<header></header>{:html}` element. Remember that an element is the combination of the opening and closing tags and everything in between.
+
+```jsx filename="Header.jsx" copy
+export default function Header() {
+    return <header></header>;
+}
+```
+
+4. Add code to the header so you see content on the page when you use the component
+
+```jsx filename="src/Header.jsx" copy
+export default function Header() {
+    return (
+        <header>
+            <h1>Alexander Prechtel's Advanced Pegasus | ITIS 3135</h1>
+            <nav>
+                <ul>
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+    );
+}
+```
+
+5. Add the component to the app: Go to the `App.jsx` file inside the src folder. You will see the code that displays the two images and other content on the page from before.
+
+```jsx filename="src/App.jsx"
+import { useState } from "react";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
+import "./App.css";
+
+function App() {
+    const [count, setCount] = useState(0);
+
+    return (
+        <>
+            <div>
+                <a href="https://vite.dev" target="_blank">
+                    <img src={viteLogo} className="logo" alt="Vite logo" />
+                </a>
+                <a href="https://react.dev" target="_blank">
+                    <img
+                        src={reactLogo}
+                        className="logo react"
+                        alt="React logo"
+                    />
+                </a>
+            </div>
+            <h1>Vite + React</h1>
+            <div className="card">
+                <button onClick={() => setCount((count) => count + 1)}>
+                    count is {count}
+                </button>
+                <p>
+                    Edit <code>src/App.jsx</code> and save to test HMR
+                </p>
+            </div>
+            <p className="read-the-docs">
+                Click on the Vite and React logos to learn more
+            </p>
+        </>
+    );
+}
+
+export default App;
+```
+
+6. To add the component we will need to import it first before we can use it. Type `import Header from ‘./Header’{:jsx}`
+
+```jsx filename="App.jsx"
+import { useState } from "react";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
+import "./App.css";
+import Header from './Header'
+...
+```
+
+7. Inside the return statement of our App function we can add our `<Header/>{:jsx}` component.
+    - Since we are not putting anything inside Header we can turn it into a void/self closing element but using the opening and closing tags is also valid. The boxes below show both options. Pick one.
+
+```jsx filename="src/App.jsx - Opening and Closing"
+...
+return (
+  <>
+    <Header></Header>
+    ...
+```
+
+```jsx filename="src/App.jsx - Self Closing"
+...
+return (
+  <>
+    <Header/>
+    ...
+```
+
+> [!WARNING]
+>
+> **STOP**
+>
+> Test your page by previewing your application in your browser to confirm if your header exists.
+
+**Repeat this whole process for the footer and confirm that it appears.**
+
+## Turning Our App from an SPA to an MPA
+
+SPA stands for Single Page Application and MPA stands for Multi Page Application.
+
+1. First we need to install the React Router package into our project. Going back to the terminal we need to stop our application by hitting `CTRL + C` and navigating into our project folder
+
+```bash filename="Terminal - Stopping Vite and Navigating into project folder"
+^C
+alexanderp@Alexander-Macbook ~/Documents/GitHub> cd itis3135-react
+alexanderp@Alexander-Macbook ~/Documents/GitHub/itis3135-react>
+```
+
+2. Inside our project folder we will install the React Router package using NPM.
+
+```bash filename="Terminal - Installing React Router"
+alexanderp@Alexander-Macbook ~/Documents/GitHub/itis3135-react> npm install react-router
+added 50 packages, and audited 203 packages in 2s
+
+32 packages are looking for funding
+    run `npm fund` for details
+
+found 0 vulnerabilities
+alexanderp@Alexander-Macbook ~/Documents/GitHub/itis3135-react>
+```
+
+3. Once it's installed we can start adding it to our project. Opening `main.jsx` inside the src folder we can add the components we need.
+    - Components we need are:
+        - BrowserRouter
+        - Routes
+        - Route
+    - To import the components we will use the import statement at the top of the file using `import { BrowserRouter, Routes, Route } from 'react-router'{:js}`
+    - Since we are importing multiple items we need to surround them with curly braces.
+
+4. In between the Strict Mode component we will see `<App/>{:jsx}` we need to delete that and replace it with this.
+
+```jsx filename="src/main.jsx"
+...
+createRoot(document.getElementById("root")).render(
+    <StrictMode>
+        <BrowserRouter>
+            <Routes></Routes>
+        </BrowserRouter>
+    </StrictMode>,
+);
+```
+
+5. To add a route will need to use the Route component.
+    - Path tells the react router which URL path we want to use. In this case / signifies the root of the website.
+    - Element tells the react router which component we want to render which we will use the App component.
+
+    > [!WARNING]
+    >
+    > Make sure `<App />{:jsx}` is surrounded by curly braces or else it will cause problems, you can also surround path=’/’ with curly braces but not doing so won’t cause issues.
+
+```jsx filename="src/main.jsx"
+...
+<Routes>
+    <Route path="/" element={<App />}></Route>
+</Routes>
+...
+```
+
+6.  Restart the app to verify that you still see our homepage. To do that we can use the script `dev` which will restart our application. To do so go to Terminal and type `npm run dev{:bash}`.
+
+```bash filename="Terminal - Restart Development Server (Vite)"
+alexanderp@Alexander-Macbook ~/Documents/GitHub/itis3135-react> npm run dev
+```
+
+7. To create another page. You will create a new component that will act as our second page. Here I am creating a new component called Introduction in a file named Introduction.jsx and I'm reusing the Header component we created earlier and adding some content on the page.
+    - If you have a good eye you will see I’m using these empty elements `<></>{:jsx}`. In React these are called Fragments and the reason I’m using them is because in React you can only return one parent element so if I were to delete them and return my header, main, and footer I would have an error.
+
+```jsx filename="src/Introduction.jsx" copy
+import Header from "./Header";
+import Footer from "./Footer";
+export default function Introduction() {
+    return (
+        <>
+            <Header />
+            <main>
+                <h2>Introduction</h2>
+                <p>qui mollit ut magna nisi</p>
+            </main>
+            <Footer />
+        </>
+    );
+}
+```
