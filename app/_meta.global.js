@@ -24,6 +24,14 @@ export default {
   },
   "##": {
     type: "separator",
+    title: "Guides",
+  },
+  "react": {
+    title: "React Setup"
+  },
+  
+  "###": {
+    type: "separator",
     title: "Modules",
   },
   "*": {

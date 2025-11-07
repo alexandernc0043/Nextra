@@ -350,3 +350,117 @@ export default function Introduction() {
     );
 }
 ```
+
+8. To add this new page as a route go back to `main.jsx` and add it as a route.
+
+> [!WARNING]
+>
+> Make sure to import the `<Introduction />{:jsx}` component inside your `main.jsx` file, or else you will get an error.
+
+```jsx filename="src/main.jsx"
+...
+<Routes>
+  <Route path='/' element={<App />}></Route>
+  <Route path='/introduction' element={<Introduction />}></Route>
+</Routes>
+...
+```
+
+9. Go back to your application preview in your web browser and check the new route you created to verify it works.
+
+## Creating a Layout
+
+You may ask if there is any way we can reduce the amount of code we are using for each page since we are reusing it on every page, and yes you can! We can create a Layout component which will have some code that we will use on every page that uses that template.
+
+1. Create a new file and name it `Layout.jsx` and create the starter code for the component.
+
+```jsx filename="src/Layout.jsx" copy
+export default function Layout(){
+  return ();
+}
+```
+
+2. Inside it add your `<Header />{:jsx}`, `<Footer />{:jsx}`, components and use the main element.
+
+```jsx filename="src/Layout.jsx" copy
+import Header from './Header'
+import Footer from './Footer'
+
+export default function Layout(){
+  return (
+    <>
+      <Header/>
+      <main></main>
+      <Footer/>
+    </>
+  );
+}
+```
+
+ This by itself won’t work yet and we need to do two more things to get it to work. First thing is we need to add the `<Outlet/>{:jsx}` component from React Router. What `<Outlet/>{:jsx}` lets us do is pass components into our Layout, so add an `<Outlet/>{:jsx}` component inside your main element.
+
+```jsx filename="src/Layout.jsx" copy
+import Header from './Header'
+import Footer from './Footer'
+import {Outlet} from 'react-router'
+
+export default function Layout(){
+  return (
+    <>
+      <Header/>
+      <main>
+        <Outlet/>
+      </main>
+      <Footer/>
+    </>
+  );
+}
+```
+
+**Go Check that you see your `<Header/>{:jsx}` and `<Footer/>{:jsx}` components and page content inside the main element.**
+
+> [!NOTE]
+>
+> If you see your header/footer duplicated you may need to remove it from the `<App/>{:jsx}` or `<Introduction/>{:jsx}` components.
+
+### Changing the title
+
+Theres a few different ways to do this and I encourage you to explore the various options but some of the more simpler options are these:
+
+1. Simply Adding the `<title></title>{:html}` element inside your component.
+    - This will override whatever title you have on your with the content inside the element.
+
+2. Using `document.title{:js}` inside the function.
+    - This allows you to append to the end of your title or override it.
+
+> [!NOTE]
+>
+> If you are using `document.title +={:js}` `<StrictMode>{:jsx}` in the `main.jsx` file you may encounter it duplicating. This is just because of how StrictMode works during development and you shouldn't encounter this when it's in production (live)
+
+## Publishing to GitHub and Vercel
+
+1. If you are runnning your application in Terminal stop the application by hitting `CTRL + C`
+
+2. If you are not inside the folder where your code is navigate to it now.
+
+3. Run `git init{:bash}` and you will see a message saying it created an empty git repository
+    - If you do not have git installed on your machine install it from their [website](https://git-scm.com/).
+
+4. Open GitHub Desktop and click the Add button, and then click `Add Existing Repository`
+
+5. Click the choose button and navigate to the folder where you have saved your code.
+
+6. Then you should see your changes inside GitHub Desktop. Write a commit message, commit changes, and then click publish repository.
+
+7. Uncheck keep this code private.
+
+8. Give the repository a name (courseid-react)
+
+9. Go back to Terminal and install the Vercel CLI
+
+```bash filename="Vercel Install Command" copy
+npm install -g vercel
+```
+
+10. Run the `vercel{:bash}` command
+    - It will ask you to sign into a vercel account which you can do so with your GitHub Account.

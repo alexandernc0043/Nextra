@@ -21,15 +21,14 @@ const banner = (
 );
 const navbar = (
   <Navbar
-    logo={<b>Alexander Prechtel's Instructions</b>}
-    // ... Your additional navbar options
+    logo={<b>Alex Prechtel's Web Development Website</b>}
     projectLink={"https://github.com/alexandernc0043/Nextra"}
   >
     <a
       href="https://docs.google.com/document/d/1ojjgZa6BVw2T2nQk-azxsbzoSEYKUilMcKHhWgWY9uo/edit?tab=t.0"
       target="_blank"
     >
-      Agenda
+      Fall 2025 Agenda
     </a>
   </Navbar>
 );
